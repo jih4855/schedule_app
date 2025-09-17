@@ -1,5 +1,9 @@
 # AI Multi-Agent Toolkit
 
+<div align="center">
+  <img src="docs/image.png" alt="AI Multi-Agent Toolkit" width="800"/>
+</div>
+
 Python 기반 LLM 에이전트 개발을 위한 도구모음과 실용 예제입니다. 여러 LLM 프로바이더 통합, 음성-텍스트 변환, Discord 연동 등을 지원합니다.
 
 **📖 문서:** https://jih4855.github.io/AI-Multi-Agent-Toolkit/
