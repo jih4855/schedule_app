@@ -2,6 +2,9 @@
 
 Python 기반 LLM 에이전트 개발을 위한 도구모음과 실용 예제입니다. 여러 LLM 프로바이더 통합, 음성-텍스트 변환, Discord 연동 등을 지원합니다.
 
+**📖 문서:** https://jih4855.github.io/AI-Multi-Agent-Toolkit/
+**📁 Repository:** https://github.com/jih4855/AI-Multi-Agent-Toolkit
+
 ## 주요 기능
 
 - **멀티 LLM 지원**: Ollama, OpenAI, Google Gemini 통합
@@ -21,8 +24,8 @@ Python 기반 LLM 에이전트 개발을 위한 도구모음과 실용 예제입
 
 ### 1. 저장소 클론
 ```bash
-git clone <repository-url>
-cd agent
+git clone https://github.com/jih4855/AI-Multi-Agent-Toolkit.git
+cd AI-Multi-Agent-Toolkit
 ```
 
 ### 2. 가상환경 생성 (권장)
@@ -125,10 +128,14 @@ agent/
 
 ## 문서
 
-자세한 사용법과 예제는 `docs/index.html`을 브라우저에서 열어 확인하세요.
+자세한 사용법과 예제는 온라인 문서에서 확인하세요:
+
+**📖 온라인 문서:** https://jih4855.github.io/AI-Multi-Agent-Toolkit/
+
+또는 로컬에서 `docs/index.html`을 브라우저로 열어 확인할 수 있습니다:
 
 ```bash
-# 브라우저에서 문서 열기
+# 브라우저에서 로컬 문서 열기
 open docs/index.html    # macOS
 start docs/index.html   # Windows
 xdg-open docs/index.html # Linux
