@@ -16,6 +16,7 @@ Python 기반 LLM 에이전트 개발을 위한 도구모음과 실용 예제입
 - **음성 처리**: Whisper 기반 STT (Speech-to-Text)
 - **Discord 연동**: 웹훅을 통한 메시지 전송 (청크 분할 지원)
 - **대화 기억**: SQLite 기반 컨텍스트 관리
+- **멀티모달 지원**: 비전 + 언어 모델을 활용한 이미지 분석
 - **문서화**: 다크 테마 HTML 문서 제공
 
 ## 시스템 요구사항
@@ -190,7 +191,40 @@ while True:
         break
 ```
 
-### 4. Discord로 메시지 보내기
+### 4. 멀티모달 에이전트로 이미지 분석하기
+
+```python
+import os
+from dotenv import load_dotenv
+from module.llm_agent import Multi_modal_agent
+
+load_dotenv()
+
+# 멀티모달 에이전트 생성
+agent = Multi_modal_agent(
+    model_name="gemini-2.5-flash",
+    provider="genai",
+    api_key=os.getenv("GOOGLE_API_KEY")
+)
+
+# 구조화된 JSON 출력으로 이미지 분석
+response = agent(
+    system_prompt="""이미지를 분석하고 텍스트 내용을 추출하세요.
+    다음 JSON 형태로 응답해주세요:
+    {
+        "extracted_text": "이미지에서 발견된 텍스트 내용",
+        "confidence": "high/medium/low",
+        "language": "감지된 언어",
+        "additional_notes": "추가 관찰 사항"
+    }""",
+    user_message="이 이미지에서 텍스트 내용을 추출하고 정리해주세요.",
+    image_path="path/to/your/image.jpg"
+)
+
+print("분석 결과:", response)
+```
+
+### 5. Discord로 메시지 보내기
 
 ```python
 from module.discord import Send_to_discord
