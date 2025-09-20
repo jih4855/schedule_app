@@ -128,3 +128,28 @@ tmp/
 # 테스트 결과 및 임시 파일
 *.output
 *.result
+
+# 테스트 출력 파일들
+test/*.json
+test/*.png
+test/*.jpg
+test/*.jpeg
+test/*.gif
+test/*.webp
+test/*.svg
+test/*.txt
+test/*.csv
+test/*.xlsx
+test/*.pdf
+test/*.docx
+
+# 생성된 이미지 파일들
+image_test.png
+generated_*.png
+output_*.jpg
+result_*.json
+
+# AI 모델 생성 결과물
+*.generated
+*.analyzed
+*.processed

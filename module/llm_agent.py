@@ -174,3 +174,89 @@ class LLM_Agent:
         if responses is None:
             responses = []
         return self.aggregate_responses(system_prompt, user_message, task=task, responses=responses)
+    
+
+class Multi_modal_agent(LLM_Agent):
+    def __call__(self, system_prompt: str, user_message: str, image_path: str = None, **kwargs) -> str:
+        """
+        이미지 입력을 포함한 LLM 응답 생성. memory=True로 설정하면 대화 기록을 메모리에 저장하고 불러옴.
+        Args:
+            system_prompt (str): 시스템 프롬프트
+            user_message (str): 사용자 메시지
+            image_path (str, optional): 이미지 파일 경로
+            **kwargs: LLM_Agent의 __call__ 메서드에 전달할 추가 인자들 (memory, task, multi_agent_response 등)
+        Returns:
+            str: LLM의 응답
+        """
+        try:
+            if image_path:
+                if self.provider == 'ollama':
+                    # Ollama의 이미지 입력 형식에 맞게 메시지 구성
+                    response = ollama.chat(
+                        model=self.model_name,
+                        messages=[{
+                            'role': 'system',
+                            'content': f'''당신은 이미지 분석 전문가입니다.
+                                중요한 규칙:
+                                1. 이미지가 업로드되지 않았거나 경로에 문제가 있다면 정확히 "이미지가 제공되지 않았거나 읽을 수 없습니다"라고 응답하세요.
+                                2. 현재 모델이 이미지를 지원하지 않는다면 "현재 모델은 이미지 처리를 지원하지 않습니다. 멀티모달 모델을 사용해주세요"라고 응답하세요.
+                                3. 이미지가 정상적으로 보이는 경우에만 구체적으로 분석하여 답변하세요.
+                                사용자 요청: {system_prompt}'''
+                        }, {
+                            'role': 'user',
+                            'content': f'{user_message}',
+                            'images': [image_path]
+                        }]
+                    )
+                    return response['message']['content']
+                
+                elif self.provider == 'genai':
+                    # 새로운 genai 멀티모달 로직
+                    import google.generativeai as genai
+                    from PIL import Image
+                    
+                    genai.configure(api_key=self.api_key)
+                    model = genai.GenerativeModel(self.model_name)
+                    
+                    # 이미지 로드
+                    image = Image.open(image_path)
+                    
+                    # 프롬프트 구성
+                    full_prompt = f"""당신은 이미지 분석 전문가입니다.
+                    {system_prompt}
+                    
+                    사용자 요청: {user_message}"""
+                    
+                    # 멀티모달 생성
+                    contents = [full_prompt, image]
+                    response = model.generate_content(contents)
+                    return response.text
+                
+                else:
+                    raise ValueError("Image input is only supported with 'ollama' or 'genai' providers.")
+            
+            else:
+                # 이미지가 없는 경우 부모 클래스 메서드 호출
+                return super().__call__(system_prompt, user_message, **kwargs)
+                
+        except Exception as e:
+            return f"Error generating response with multi-modal input: {e}"
+
+# def analyze_customer_image(image_path, complaint_text):
+#     response = ollama.chat(
+#         model='gemma3:12b',
+#         messages=[{
+#             'role': 'user',
+#             'content': f'{complaint_text}',
+#             'images': [image_path]
+#         }]
+#     )
+#     return response['message']['content']
+
+# # 사용 예시
+# image_analysis = analyze_customer_image(
+#     'broken_phone.jpg', 
+#     '폰 화면이 이상해요'
+# )
+# print(image_analysis)
+# # 결과: "화면 좌측 상단에 검은 선이 보이며, 액정 크랙이 확인됩니다..."

@@ -1,0 +1,262 @@
+/* AI Multi-Agent Toolkit Documentation Styles */
+
+/* 전역 변수 */
+:root {
+    --nav-h: 56px;
+}
+
+/* 기본 스타일 */
+body {
+    background-color: #1a1a1a;  /* 어두운 회색 */
+    color: #e0e0e0;            /* 밝은 회색 텍스트 */
+}
+
+summary {
+    cursor: default;
+}
+
+/* 코드 주석 스타일 */
+.comment {
+    font-style: italic;
+    color: #11f0f8;
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+    --bs-navbar-bg: #23262a !important;           /* sidebar와 동일한 색상으로 통일 */
+    --bs-navbar-color: #cbd5e1;
+    --bs-navbar-hover-color: #ffffff;
+    --bs-navbar-active-color: #ffffff;
+    --bs-navbar-brand-color: #ffffff;
+    --bs-navbar-brand-hover-color: #ffffff;
+    --bs-navbar-toggler-border-color: #3a3f45;
+    background-color: #23262a !important;         /* 직접 배경색 강제 적용 */
+    z-index: 1030;                                /* 본문이 navbar를 덮지 않도록 설정 */
+}
+
+.navbar .dropdown-menu {
+    background: #23262a;               /* navbar와 동일한 색상으로 통일 */
+    border-color: #3a3f45;
+}
+
+.navbar .dropdown-item {
+    color: #cbd5e1;
+}
+
+.navbar .dropdown-item:hover {
+    background: #3a3f45;
+    color: #ffffff;
+}
+
+/* 제목 스타일 */
+h1, h2 {
+    color: #ffffff;
+}
+
+h3, h4, h5, h6 {
+    color: #d0d0d0;
+    margin-left: 0px;          /* 제목을 앞쪽으로 정렬 */
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding-top: 15px;
+}
+
+/* 링크 색상 조정 */
+a {
+    color: #4dabf7;
+}
+
+/* 코드 컨테이너 스타일 */
+.code-container {
+    position: relative;
+    background: #33373c;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 10px 0;
+}
+
+.copy_button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fbfbfb;
+    color: rgb(10, 10, 10);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.copy_button:hover {
+    background: #ebeae9;
+}
+
+.copy_button:active {
+    background: #eeefee;
+    transform: scale(0.98);
+}
+
+/* 코드 스타일 */
+pre {
+    margin: 0;
+    overflow-x: auto;
+}
+
+code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #fbfffb;
+    white-space: pre-wrap;
+}
+
+var {
+    color: rgb(138, 111, 246);
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* 레이아웃 */
+html {
+    scroll-behavior: smooth;
+}
+
+.layout {
+    display: flex;
+    gap: 16px;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 260px;
+    flex: 0 0 260px;
+    height: calc(100vh - var(--nav-h));
+    position: sticky;
+    top: var(--nav-h);
+    overflow: auto;
+    background: #23262a;
+    border-right: 1px solid #2f3338;
+    padding: 16px 12px;
+    z-index: 1020;                     /* sidebar도 적절한 z-index 설정 */
+}
+
+.sidebar-title {
+    color: #fff;
+    font-weight: 700;
+    margin: 4px 8px 10px;
+    font-size: 16px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin: 4px 0;
+}
+
+.sidebar a {
+    display: block;
+    padding: 6px 10px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.sidebar a:hover {
+    background: #2b2f36;
+    color: #fff;
+}
+
+.sidebar a.active {
+    background: #3a3f45;
+    color: #fff;
+}
+
+.sidebar .sub {
+    margin-left: 10px;
+    border-left: 1px dashed #3a3f45;
+    padding-left: 10px;
+}
+
+/* 메인 컨텐츠 스타일 */
+.content {
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px 80px;
+    line-height: 1.6;
+    z-index: 1010;                     /* 본문은 가장 낮은 z-index */
+    position: relative;                /* z-index가 작동하도록 position 설정 */
+}
+
+/* 문단과 리스트 여백 개선 */
+p {
+    margin-bottom: 1.2em;
+    margin-left: 20px;         /* p 태그도 들여쓰기 */
+}
+
+ul, ol {
+    margin-bottom: 1.5em;
+    padding-left: 30px;        /* Python 스타일 들여쓰기 */
+    margin-left: 20px;         /* 리스트 전체 들여쓰기 */
+}
+
+li {
+    margin-bottom: 0.5em;
+    padding-left: 8px;         /* 리스트 항목 추가 들여쓰기 */
+}
+
+/* 섹션 간 여백 */
+.docs-section > * {
+    margin-bottom: 25px;
+}
+
+/* summary 태그도 들여쓰기 */
+summary {
+    margin-left: 20px;         /* summary 들여쓰기 */
+    font-weight: 600;
+    cursor: pointer;
+}
+
+details {
+    margin-bottom: 30px;
+    margin-left: 0px;          /* details는 기본 위치 */
+}
+
+details > summary {
+    margin-left: 20px;         /* summary 들여쓰기 */
+    font-weight: 600;
+    cursor: pointer;
+}
+
+details > p,
+details > div {
+    margin-left: 40px;         /* 내용은 더 깊게 들여쓰기 */
+    padding-left: 0px;
+}
+
+/* 스티키 네비바 사용 시 앵커가 헤더에 가려지지 않도록 여백 */
+.docs-section h3,
+.docs-section details {
+    scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: relative;
+        height: auto;
+        width: 100%;
+        top: 0;
+    }
+}

@@ -12,7 +12,7 @@ pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.
 pipe = pipe.to("mps" if torch.backends.mps.is_available() else "cpu")
 
 # 생성할 이미지에 대한 텍스트 프롬프트를 작성합니다.
-prompt = """
+prompt = """ 자동차에 흠집이 난 이미지 생성
 """
 
 # 파이프라인을 실행하여 이미지를 생성합니다. (SD 3.5용 파라미터 추가)
