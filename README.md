@@ -91,7 +91,7 @@ agent = LLM_Agent(
     api_key=os.getenv("GOOGLE_API_KEY")
 )
 
-response = agent.generate_response(
+response = agent(
     system_prompt="You are a helpful assistant.",
     user_message="Explain machine learning in simple terms."
 )
