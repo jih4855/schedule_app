@@ -73,7 +73,9 @@ a {
     border-radius: 6px;
     padding: 16px;
     margin: 10px 0;
+    overflow: hidden; /* 내부 pre의 모서리와 일체화 */
 }
+
 
 .copy_button {
     position: absolute;
@@ -110,6 +112,27 @@ code {
     line-height: 1.4;
     color: #fbfffb;
     white-space: pre-wrap;
+}
+
+/* 최소 스타일만 유지 */
+
+/* VS Code-like token colors (실제 VS Code 스키마) - 우선순위 강화 */
+.code-vscode { background: #33373c !important; }
+.code-vscode .tok-kw { color: #c586c0 !important; }           /* import, from, def, class 등 - 보라색 */
+.code-vscode .tok-fn { color: #dcdcaa !important; }           /* 함수명 - 노란색 */
+.code-vscode .tok-class { color: #4ec9b0 !important; }        /* 클래스명 - 청록색 */
+.code-vscode .tok-builtin { color: #dcdcaa !important; }      /* 내장함수 (print 등) - 노란색 */
+.code-vscode .tok-var { color: #9cdcfe !important; }          /* 변수명 - 파란색 */
+.code-vscode .tok-str { color: #ce9178 !important; }          /* 문자열 - 주황색 */
+.code-vscode .tok-num { color: #b5cea8 !important; }          /* 숫자 - 연두색 */
+.code-vscode .tok-comm { color: #6a9955 !important; font-style: italic; } /* 주석 - 초록색 */
+.code-vscode .tok-decor { color: #c8c8c8 !important; }        /* 장식자 */
+.code-vscode .tok-prop { color: #9cdcfe !important; }         /* 속성/메소드 - 하늘색 */
+
+/* 기존 var 태그는 하이라이트된 코드에서 무시 */
+.code-vscode var {
+    color: inherit !important;
+    font-family: inherit !important;
 }
 
 var {
