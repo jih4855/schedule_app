@@ -14,7 +14,7 @@ class LLM_Agent:
         if self.provider not in ['ollama', 'genai', 'openai']:
             raise ValueError("Provider must be either 'ollama', 'genai' or 'openai'")
 
-    def generate_response(self, system_prompt:str, user_message:str, memory:bool=False, task:str=None, multi_agent_response:str=None) -> str:
+    def __call__(self, system_prompt:str, user_message:str, memory:bool=False, task:str=None, multi_agent_response:str=None) -> str:
         """
         LLM 응답 생성. memory=True로 설정하면 대화 기록을 메모리에 저장하고 불러옴.
         Args:

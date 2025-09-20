@@ -17,7 +17,7 @@ def save_binary_file(file_name, data):
 
 def generate():
     client = genai.Client(
-        api_key=os.environ.get("GOOGLE_API_KEY"),
+        api_key=os.environ.get("GENAI_API_KEY"),
     )
 
     model = "gemini-2.5-flash-image-preview"

@@ -98,6 +98,116 @@ response = agent.generate_response(
 print(response)
 ```
 
+## 사용 예제
+
+### 1. 멀티 에이전트 활용하기
+
+```python
+from module.llm_agent import LLM_Agent
+
+system_prompt = "You are a helpful assistant."
+agent1_user_prompt = "리눅스에 대해서 설명해주세요."
+agent2_user_prompt = "앞선 답변을 읽고 내용을 보충해 주세요"
+
+# 복수의 에이전트의 프롬프트를 정의합니다.
+multi_agent = LLM_Agent(model_name="gemma3n", provider="ollama")
+agent1 = multi_agent(system_prompt, agent1_user_prompt, task=None)
+agent2 = multi_agent(system_prompt, agent2_user_prompt, task=None, multi_agent_response=agent1)
+
+print("Agent 1 Response:", agent1)
+print("Agent 2 Response:", agent2)
+```
+
+### 2. 모든 에이전트의 응답 통합하기
+
+```python
+from module.llm_agent import LLM_Agent
+
+# 각 에이전트의 시스템 프롬프트, 사용자 프롬프트, 작업을 정의합니다.
+multi_agent_tasks = {
+    "Agent 1": "도시에서 발생하는 환경 문제(대기, 수질, 쓰레기 등)를 정리하고, 가장 시급한 과제를 제시한다.",
+    "Agent 2": "친환경 교통수단(대중교통, 자전거, 전기차 등)을 기반으로 지속 가능한 교통 인프라 계획을 제안한다.",
+    "Agent 3": "재생에너지(태양광, 풍력, 스마트 그리드 등)를 활용하여 효율적인 에너지 공급 방안을 설계한다.",
+    "Agent 4": "도시 공간 구조(공원, 주거, 상업지구 배치 등)를 최적화한다."
+}
+
+multi_agent_system_prompts = {
+    "Agent 1": "당신은 환경 전문가입니다. 도시의 환경 문제를 분석하고, 가장 시급한 문제를 제시하세요.",
+    "Agent 2": "당신은 교통 전문가입니다. 지속 가능한 교통 인프라 계획을 제안하세요.",
+    "Agent 3": "당신은 에너지 전문가입니다. 재생에너지를 활용한 에너지 공급 방안을 설계하세요.",
+    "Agent 4": "당신은 도시 계획 전문가입니다. 도시 공간 구조를 최적화하는 방안을 제시하세요."
+}
+
+user_prompts = {
+    "Agent 1": "도시에서 발생하는 환경 문제를 분석하고, 가장 시급한 문제를 제시하세요.",
+    "Agent 2": "지속 가능한 교통 인프라 계획을 제안하세요.",
+    "Agent 3": "재생에너지를 활용한 에너지 공급 방안을 설계하세요.",
+    "Agent 4": "도시 공간 구조를 최적화하는 방안을 제시하세요."
+}
+
+order = ["Agent 1", "Agent 2", "Agent 3", "Agent 4"]
+
+multi_agent = LLM_Agent(model_name="gemini-2.5-flash", provider="genai", api_key="your_api_key")
+
+agent_responses = {
+    name: multi_agent(multi_agent_system_prompts[name], user_prompts[name], multi_agent_tasks[name])
+    for name in order
+}
+
+response_list = [agent_responses[name] for name in order]
+
+multi_agent_responses = multi_agent(
+    "당신은 도시 계획 전문가입니다. 지속 가능한 도시 설계 방안을 제시하세요.",
+    "다음은 여러 전문가의 의견입니다. 이를 바탕으로 최종 요약 및 통합된 지속 가능한 도시 설계 방안을 제시하세요.",
+    "최종 요약 및 통합된 지속 가능한 도시 설계 방안을 제시한다.",
+    response_list
+)
+
+print("Agent 1 Response:", agent_responses["Agent 1"])
+print("Agent 2 Response:", agent_responses["Agent 2"])
+print("Agent 3 Response:", agent_responses["Agent 3"])
+print("Agent 4 Response:", agent_responses["Agent 4"])
+print("Multi-Agent Responses:", multi_agent_responses)
+```
+
+### 3. LLM 에이전트에 기억력 붙이기
+
+```python
+import dotenv
+import os
+dotenv.load_dotenv()
+
+# LLM_Agent 인스턴스 생성
+llm = LLM_Agent(model_name="gemini-2.5-flash", provider="genai", api_key=os.getenv("GENAI_API_KEY"), max_history=10)
+
+# 대화 루프 예시
+while True:
+    user_input = input("You: ")
+    response = llm(system_prompt="You are a helpful assistant.", user_message=user_input, memory=True)
+    print("Assistant:", response)
+
+    if user_input.lower() in ['exit', 'quit']:
+        break
+```
+
+### 4. Discord로 메시지 보내기
+
+```python
+from module.discord import Send_to_discord
+from module.llm_agent import LLM_Agent
+
+model_name = 'gemma3:12b'
+system_prompt = '당신은 유능한 비서입니다. 이용자에게 도움이 되는 답변을 제공합니다.'
+user_prompt = '프랑스의 수도는 어디인가요?'
+provider = 'ollama'
+
+agent = LLM_Agent(model_name, provider, api_key=None)
+response = agent(system_prompt, user_prompt, task=None)
+
+discord = Send_to_discord(base_url="your_discord_webhook_url")
+discord.send_message(response)
+```
+
 ## 프로젝트 구조
 
 ```
