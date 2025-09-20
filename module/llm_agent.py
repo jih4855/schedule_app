@@ -241,22 +241,3 @@ class Multi_modal_agent(LLM_Agent):
                 
         except Exception as e:
             return f"Error generating response with multi-modal input: {e}"
-
-# def analyze_customer_image(image_path, complaint_text):
-#     response = ollama.chat(
-#         model='gemma3:12b',
-#         messages=[{
-#             'role': 'user',
-#             'content': f'{complaint_text}',
-#             'images': [image_path]
-#         }]
-#     )
-#     return response['message']['content']
-
-# # 사용 예시
-# image_analysis = analyze_customer_image(
-#     'broken_phone.jpg', 
-#     '폰 화면이 이상해요'
-# )
-# print(image_analysis)
-# # 결과: "화면 좌측 상단에 검은 선이 보이며, 액정 크랙이 확인됩니다..."
