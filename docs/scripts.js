@@ -84,78 +84,25 @@ function buildSidebar() {
     }
 }
 
-// 하이라이팅 함수들
+// 간단하고 안전한 하이라이팅 함수
 function highlightPython(code) {
     let html = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    // 문자열을 임시로 대체
-    const strings = [];
-    html = html.replace(/"[^"]*"/g, (match) => {
-        strings.push(match);
-        return `__STRING_${strings.length - 1}__`;
-    });
-    html = html.replace(/'[^']*'/g, (match) => {
-        strings.push(match);
-        return `__STRING_${strings.length - 1}__`;
-    });
+    // 문자열 하이라이팅 (가장 안전한 방식)
+    html = html.replace(/"[^"]*"/g, '<span class="tok-str">$&</span>');
+    html = html.replace(/'[^']*'/g, '<span class="tok-str">$&</span>');
 
-    // 주석을 임시로 대체
-    const comments = [];
-    html = html.replace(/#[^\n]*/g, (match) => {
-        comments.push(match);
-        return `__COMMENT_${comments.length - 1}__`;
-    });
+    // 주석 하이라이팅
+    html = html.replace(/#[^\n]*/g, '<span class="tok-comm">$&</span>');
 
-    // 키워드 하이라이팅
-    const keywords = ['def', 'class', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'import', 'from', 'return', 'True', 'False', 'None', 'and', 'or', 'not', 'in', 'is', 'as', 'with', 'pass', 'break', 'continue'];
+    // 기본 키워드만 하이라이팅 (안전한 방식)
+    const keywords = ['def', 'class', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'import', 'from', 'return', 'True', 'False', 'None'];
     keywords.forEach(kw => {
         html = html.replace(new RegExp('\\b' + kw + '\\b', 'g'), `<span class="tok-kw">${kw}</span>`);
     });
 
-    // 내장 함수 하이라이팅 (print, input, len, range 등)
-    const builtins = ['print', 'input', 'len', 'range', 'str', 'int', 'float', 'list', 'dict', 'set', 'tuple', 'open', 'enumerate', 'zip', 'map', 'filter', 'sorted', 'max', 'min', 'sum', 'abs', 'round', 'type', 'isinstance', 'hasattr', 'getattr', 'setattr'];
-    builtins.forEach(fn => {
-        html = html.replace(new RegExp('\\b' + fn + '(?=\\s*\\()', 'g'), `<span class="tok-builtin">${fn}</span>`);
-    });
-
     // 숫자 하이라이팅
     html = html.replace(/\b\d+\.?\d*\b/g, '<span class="tok-num">$&</span>');
-
-    // 함수/클래스 이름 (정의 시)
-    html = html.replace(/(<span class="tok-kw">def<\/span>\s+)(\w+)/g, '$1<span class="tok-fn">$2</span>');
-    html = html.replace(/(<span class="tok-kw">class<\/span>\s+)(\w+)/g, '$1<span class="tok-class">$2</span>');
-
-    // 함수 호출 (괄호 앞의 단어들) - 내장함수가 아닌 것들
-    html = html.replace(/(?<!<span[^>]*>)\b([a-zA-Z_]\w*)(?=\s*\()(?![^<]*<\/span>)/g, (match, p1) => {
-        // 이미 하이라이팅된 키워드나 내장함수가 아닌 경우만
-        if (!keywords.includes(p1) && !builtins.includes(p1)) {
-            return `<span class="tok-fn">${p1}</span>`;
-        }
-        return match;
-    });
-
-    // 점 표기법 (메소드/속성)
-    html = html.replace(/\.(\w+)(?=\s*\()/g, '.<span class="tok-fn">$1</span>'); // 메소드
-    html = html.replace(/\.(\w+)(?!\s*\()/g, '.<span class="tok-prop">$1</span>'); // 속성
-
-    // 변수 하이라이팅 (할당문의 좌변) - 안전한 방법
-    html = html.replace(/^(\s*)([a-zA-Z_]\w*)(\s*=)/gm, '$1<span class="tok-var">$2</span>$3');
-
-    // for 루프의 변수들
-    html = html.replace(/(<span class="tok-kw">for<\/span>\s+)([a-zA-Z_]\w*)(\s+<span class="tok-kw">in<\/span>)/g, '$1<span class="tok-var">$2</span>$3');
-
-    // 딕셔너리의 키들 (따옴표 없는 경우)
-    html = html.replace(/"([^"]+)"(\s*:)/g, '<span class="tok-str">"$1"</span>$2');
-
-    // 문자열 복원
-    strings.forEach((str, i) => {
-        html = html.replace(`__STRING_${i}__`, `<span class="tok-str">${str}</span>`);
-    });
-
-    // 주석 복원
-    comments.forEach((comment, i) => {
-        html = html.replace(`__COMMENT_${i}__`, `<span class="tok-comm">${comment}</span>`);
-    });
 
     return html;
 }
@@ -207,25 +154,30 @@ function applyHighlighting() {
     document.querySelectorAll('pre code').forEach(codeEl => {
         if (codeEl.dataset.highlighted) return;
 
-        const lang = (codeEl.getAttribute('data-lang') || '').toLowerCase();
-        const code = codeEl.textContent;
+        try {
+            const lang = (codeEl.getAttribute('data-lang') || '').toLowerCase();
+            const code = codeEl.textContent;
 
-        let html;
-        if (lang === 'javascript' || lang === 'js') {
-            html = highlightJS(code);
-        } else if (lang === 'json') {
-            html = highlightJSON(code);
-        } else {
-            html = highlightPython(code);
-        }
+            let html;
+            if (lang === 'javascript' || lang === 'js') {
+                html = highlightJS(code);
+            } else if (lang === 'json') {
+                html = highlightJSON(code);
+            } else {
+                html = highlightPython(code);
+            }
 
-        codeEl.innerHTML = html;
-        codeEl.dataset.highlighted = 'true';
+            codeEl.innerHTML = html;
+            codeEl.dataset.highlighted = 'true';
 
-        // code-vscode 클래스 추가 (중요!)
-        const pre = codeEl.closest('pre');
-        if (pre) {
-            pre.classList.add('code-vscode');
+            // code-vscode 클래스 추가 (중요!)
+            const pre = codeEl.closest('pre');
+            if (pre) {
+                pre.classList.add('code-vscode');
+            }
+        } catch (error) {
+            console.error('하이라이팅 오류:', error);
+            // 오류 발생시 원본 텍스트 유지
         }
     });
 }
@@ -258,7 +210,17 @@ function setupActiveHighlight() {
 document.addEventListener('DOMContentLoaded', () => {
     buildSidebar();
     setupActiveHighlight();
-    applyHighlighting();
+    // 하이라이팅 완전히 비활성화 - 기본 텍스트만 표시
+    // applyHighlighting();
+
+    // 모든 code 요소에 기본 스타일만 적용
+    document.querySelectorAll('pre code').forEach(codeEl => {
+        codeEl.style.color = '#e0e0e0';
+        codeEl.style.fontFamily = 'Consolas, Monaco, monospace';
+        codeEl.style.fontSize = '13px';
+        codeEl.style.lineHeight = '1.4';
+    });
+
     // 모든 details 요소를 기본으로 접힌 상태로 설정
     document.querySelectorAll('.docs-section details').forEach(d => { d.open = false; });
 });

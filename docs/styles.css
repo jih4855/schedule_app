@@ -116,18 +116,81 @@ code {
 
 /* 최소 스타일만 유지 */
 
-/* VS Code-like token colors (실제 VS Code 스키마) - 우선순위 강화 */
+/* CSS 전용 하이라이팅 클래스 (JavaScript 없이 HTML에서 직접 사용) */
 .code-vscode { background: #33373c !important; }
-.code-vscode .tok-kw { color: #c586c0 !important; }           /* import, from, def, class 등 - 보라색 */
-.code-vscode .tok-fn { color: #dcdcaa !important; }           /* 함수명 - 노란색 */
-.code-vscode .tok-class { color: #4ec9b0 !important; }        /* 클래스명 - 청록색 */
-.code-vscode .tok-builtin { color: #dcdcaa !important; }      /* 내장함수 (print 등) - 노란색 */
-.code-vscode .tok-var { color: #9cdcfe !important; }          /* 변수명 - 파란색 */
-.code-vscode .tok-str { color: #ce9178 !important; }          /* 문자열 - 주황색 */
-.code-vscode .tok-num { color: #b5cea8 !important; }          /* 숫자 - 연두색 */
-.code-vscode .tok-comm { color: #6a9955 !important; font-style: italic; } /* 주석 - 초록색 */
-.code-vscode .tok-decor { color: #c8c8c8 !important; }        /* 장식자 */
-.code-vscode .tok-prop { color: #9cdcfe !important; }         /* 속성/메소드 - 하늘색 */
+
+/* 더 강력한 선택자로 우선순위 높이기 */
+pre.code-vscode code .kw,
+.code-vscode .kw,
+code .kw {
+    color: #c586c0 !important;
+    font-weight: bold !important;
+}
+
+/* 함수명 (노란색) */
+pre.code-vscode code .fn,
+.code-vscode .fn,
+code .fn {
+    color: #dcdcaa !important;
+}
+
+/* 클래스명 (청록색) */
+pre.code-vscode code .cls,
+.code-vscode .cls,
+code .cls {
+    color: #4ec9b0 !important;
+    font-weight: bold !important;
+}
+
+/* 내장함수 (노란색) */
+pre.code-vscode code .builtin,
+.code-vscode .builtin,
+code .builtin {
+    color: #dcdcaa !important;
+}
+
+/* 변수명 (파란색) */
+pre.code-vscode code .var,
+.code-vscode .var,
+code .var {
+    color: #9cdcfe !important;
+}
+
+/* 문자열 (주황색) */
+pre.code-vscode code .str,
+.code-vscode .str,
+code .str {
+    color: #ce9178 !important;
+}
+
+/* 숫자 (연두색) */
+pre.code-vscode code .num,
+.code-vscode .num,
+code .num {
+    color: #b5cea8 !important;
+}
+
+/* 주석 (초록색, 이탤릭) */
+pre.code-vscode code .comm,
+.code-vscode .comm,
+code .comm {
+    color: #6a9955 !important;
+    font-style: italic !important;
+}
+
+/* 모듈/라이브러리명 (하늘색) */
+pre.code-vscode code .mod,
+.code-vscode .mod,
+code .mod {
+    color: #9cdcfe !important;
+}
+
+/* 메서드/속성 (하늘색) */
+pre.code-vscode code .prop,
+.code-vscode .prop,
+code .prop {
+    color: #9cdcfe !important;
+}
 
 /* 기존 var 태그는 하이라이트된 코드에서 무시 */
 .code-vscode var {
