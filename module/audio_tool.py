@@ -10,17 +10,13 @@ import re
 console = Console()
 
 class Audio:
-    def __init__(self, text_output="text", source_file="source_file", whisper_model="large-v3", audio_extensions=None, urls=None, preferred_codec="mp3", preferred_quality="192"):
+    def __init__(self, text_output="text", source_file="source_file"):
         self.text_output = text_output
         self.source_file = source_file
-        self.urls = urls if urls is not None else []
-        self.whisper_model = whisper_model
-        self.audio_extensions = audio_extensions if audio_extensions is not None else ["*.mp3", "*.wav", "*.m4a", "*.flac", "*.aac", "*.ogg", "*.wma"]
-        self.preferred_codec = preferred_codec
-        self.preferred_quality = preferred_quality
+
 
     #음성파일을 텍스트로 변환하기
-    def transcribe_audio(self):
+    def transcribe_audio(self, whisper_model:str="large-v3", audio_extensions:list=["mp3","wav","m4a","flac","aac","ogg"]):
         from rich.progress import track 
 
         audio_file = []
@@ -37,7 +33,7 @@ class Audio:
         try:
             # 패턴 정규화: ["*.mp3"]도, ["mp3"]도 모두 지원
             patterns = []
-            for ext in self.audio_extensions:
+            for ext in audio_extensions:
                 if any(ch in ext for ch in ("*", "?", "[")):  # 이미 패턴이면 그대로
                     patterns.append(ext)
                 else:  # 확장자 형식이면 "*.ext"로 변환
@@ -56,7 +52,7 @@ class Audio:
                 return
 
             # 실제 작업 직전에 모델 로드
-            model = whisper.load_model(self.whisper_model)
+            model = whisper.load_model(whisper_model)
 
             for audio in track(audio_file, description="🎵 음성파일 변환 중..."):
                 json_filename = os.path.basename(audio) + ".json"
@@ -81,7 +77,7 @@ class Audio:
         except Exception as e:
             print(f"Error: {e}")
 
-    def download_youtube_audio(self):
+    def download_youtube_audio(self, urls=None, preferred_codec="mp3", preferred_quality="192"):
         """YouTube 영상에서 음성만 추출"""
         # 저장 폴더 보장
         os.makedirs(self.source_file, exist_ok=True)
@@ -94,15 +90,15 @@ class Audio:
             'nooverwrites': True,  # ← 중복 방지
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': self.preferred_codec,
-                'preferredquality': self.preferred_quality,
+                'preferredcodec': preferred_codec,
+                'preferredquality': preferred_quality,
             }],
             'ignoreerrors': True
         }
         successful = []
         failed = []
 
-        for url in self.urls:
+        for url in urls:
             if not url:
                 print("url이 필요합니다.")
                 continue

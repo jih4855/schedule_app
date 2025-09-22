@@ -5,8 +5,6 @@ from module.text_tool import Text_tool
 import os
 import json
 
-#env 파일 로드
-
 def main():
     print("오디오 에이전트 시작...")
 
@@ -19,7 +17,7 @@ def main():
     )
 
     urls = [
-        "https://youtu.be/zpwuKWQnFAs?si=3krTo1o7jKIKa2Qr"
+        "https://youtu.be/Youtub_e_Video_ID"  # 여기에 실제 YouTube URL을 넣으세요.
     ]
 
     try:

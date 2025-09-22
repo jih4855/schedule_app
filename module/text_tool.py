@@ -1,5 +1,6 @@
 import os
 import re
+import json
 
 class Text_tool:
     def __init__(self, chunk_size=1000, overlap=0, max_length=None):
@@ -56,12 +57,45 @@ class Text_tool:
 
         return safe_name
 
-  #음성파일을 텍스트로 변환하고 저장할 폴더 생성하기
-    def make_a_folder(self, filename):
-        safe_filename = self.safe_filename(filename)
-        self.result_folder = safe_filename
-        if not os.path.exists(self.result_folder):
-            os.makedirs(self.result_folder)
-            print(f"Folder '{self.result_folder}' created successfully.")
-        else:
-            print(f"Folder '{self.result_folder}' already exists.")
+
+    def save_result_json(self, final_output, output_filename, save_foldername):
+        safe_output_filename = self.safe_filename(output_filename)
+        safe_save_foldername = self.safe_filename(save_foldername)
+        if not os.path.exists(safe_save_foldername):
+            os.makedirs(safe_save_foldername, exist_ok=True)
+
+        try:
+            # JSON 형태인지 확인하고 저장
+            if isinstance(final_output, str):
+                try:
+                    #'''json ... ``` 형태의 JSON 추출 시도
+                    import re
+                    json_match = re.search(r'```json\s*(.*?)\s*```', final_output, re.DOTALL)
+                    if json_match:
+                        json_str = json_match.group(1)
+                    else:
+                        json_str = final_output  # 전체 문자열을 JSON으로 시도
+                    json_data = json.loads(json_str)
+                    filepath = os.path.join(safe_save_foldername, f"{safe_output_filename}.json")
+                    with open(filepath, 'w', encoding='utf-8') as outfile:
+                        json.dump(json_data, outfile, ensure_ascii=False, indent=2)
+                    print(f"✅ JSON 저장 완료: {filepath}")
+                    return
+                except json.JSONDecodeError:
+                    pass
+
+            # JSON이 아니거나 파싱 실패 시 객체 그대로 저장
+            if isinstance(final_output, (dict, list)):
+                filepath = os.path.join(safe_save_foldername, f"{safe_output_filename}.json")
+                with open(filepath, 'w', encoding='utf-8') as outfile:
+                    json.dump(final_output, outfile, ensure_ascii=False, indent=2)
+                print(f"✅ JSON 저장 완료: {filepath}")
+            else:
+                # 텍스트로 저장
+                filepath = os.path.join(safe_save_foldername, f"{safe_output_filename}.txt")
+                with open(filepath, 'w', encoding='utf-8') as outfile:
+                    outfile.write(str(final_output))
+                print(f"✅ 텍스트 저장 완료: {filepath}")
+
+        except Exception as e:
+            print(f"❌ 저장 오류: {e}")
