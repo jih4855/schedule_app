@@ -209,7 +209,7 @@ function setupActiveHighlight() {
  */
 document.addEventListener('DOMContentLoaded', () => {
     buildSidebar();
-    setupActiveHighlight();
+    // setupActiveHighlight(); // 자동 활성화 기능 비활성화
     // 하이라이팅 완전히 비활성화 - 기본 텍스트만 표시
     // applyHighlighting();
 
@@ -224,12 +224,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모든 details 요소를 기본으로 접힌 상태로 설정
     document.querySelectorAll('.docs-section details').forEach(d => { d.open = false; });
 
-    // 첫 번째 섹션을 기본적으로 활성화
-    setTimeout(() => {
-        const firstLink = document.querySelector('.sidebar a');
-        if (firstLink) {
-            document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
-            firstLink.classList.add('active');
-        }
-    }, 100);
 });
