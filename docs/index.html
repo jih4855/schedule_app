@@ -40,15 +40,16 @@
                     <li>2025/09/17 에이전트 메모리 기능 구현</li>
                     <li>2025/09/21 LLM_Agent 클래스에 __call__ 매직 메서드가 추가되어 agent.generate_response() 대신 agent() 직접 호출이 가능해졌습니다.</li>
                     <li>2025/09/21 LLM_Agent 멀티모달 사용 추가</li>
+                    <li>2025/09/22 멀티 에이전트 오디오 처리 파이프라인 구현 (YouTube → 시험 문제 자동 생성)</li>
                 </ul>
 
                 <h3>2. 모듈 소개</h3>
 
                 <details>
-                    <summary>llm_agent.py - LLM 에이전트 핵심 모듈</summary>
+                    <summary>LLM 에이전트 핵심 모듈</summary>
                     <div class="code-container">
                         <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
-                            <strong>1) 인스턴스 생성</strong>
+                            <strong>1) 인스턴스 생성 - 📄 llm_agent.py</strong>
                         </div>
                         <button class="copy_button" onclick="copy_button('module-llm-init')">Copy</button>
                         <pre class="language-python"><code id="module-llm-init">
@@ -79,7 +80,7 @@ modal_agent = Multi_modal_agent(
 
                     <div class="code-container">
                         <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
-                            <strong>2) 에이전트 호출하고 응답받기</strong>
+                            <strong>2) 에이전트 호출하고 응답받기 - 📄 llm_agent.py</strong>
                         </div>
                         <button class="copy_button" onclick="copy_button('module-llm-call')">Copy</button>
                         <pre class="language-python"><code id="module-llm-call">
@@ -112,8 +113,11 @@ print(image_response)  # 이미지 분석 결과가 출력됩니다
                 </details>
 
                 <details>
-                    <summary>discord.py - Discord 웹훅 연동 모듈</summary>
+                    <summary>Discord 웹훅 연동 모듈</summary>
                     <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>Discord 메시지 전송 - 📄 discord.py</strong>
+                        </div>
                         <button class="copy_button" onclick="copy_button('module-discord')">Copy</button>
                         <pre class="language-python"><code id="module-discord">
 from module.discord import Send_to_discord
@@ -131,8 +135,11 @@ discord = Send_to_discord(
                 </details>
 
                 <details>
-                    <summary>audio_tool.py - 음성 처리 모듈</summary>
+                    <summary>음성 처리 모듈</summary>
                     <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>음성을 텍스트로 변환 - 📄 audio_tool.py</strong>
+                        </div>
                         <button class="copy_button" onclick="copy_button('module-audio')">Copy</button>
                         <pre class="language-python"><code id="module-audio">
 from module.audio_tool import Audio
@@ -152,8 +159,11 @@ audio = Audio(
                 </details>
 
                 <details>
-                    <summary>memory.py - 대화 기억 관리 모듈</summary>
+                    <summary>대화 기억 관리 모듈</summary>
                     <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>대화 기록 SQLite 저장 - 📄 memory.py</strong>
+                        </div>
                         <button class="copy_button" onclick="copy_button('module-memory')">Copy</button>
                         <pre class="language-python"><code id="module-memory">
 from module.memory import MemoryManager
@@ -171,8 +181,11 @@ memory = MemoryManager(
                 </details>
 
                 <details>
-                    <summary>text_tool.py - 텍스트 처리 유틸리티</summary>
+                    <summary>텍스트 처리 유틸리티</summary>
                     <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>긴 텍스트 청킹 분할 - 📄 text_tool.py</strong>
+                        </div>
                         <button class="copy_button" onclick="copy_button('module-text')">Copy</button>
                         <pre class="language-python"><code id="module-text">
 from module.text_tool import Text_tool
@@ -192,6 +205,29 @@ text_tool = Text_tool(
                 <h3>3. LLM 에이전트 사용하기</h3>
                 <details>
                     <summary>llm에이전트 생성하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('llm-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="llm-prerequisites">
+# 필요한 모듈 임포트
+from module.llm_agent import LLM_Agent
+
+# LLM 에이전트 인스턴스 생성
+agent = LLM_Agent(
+    model_name="gemini-2.5-flash",  # 사용할 모델명 (예: "gemma:12b", "gpt-4", "gemini-2.5-flash")
+    provider="genai",               # LLM 제공자 ("ollama", "openai", "genai")
+    api_key="your_api_key",         # API 키 (ollama는 None, 나머지는 필수)
+    session_id="chat_session",      # 메모리 기능용 세션 ID (선택사항)
+    max_history=10                  # 기억할 대화 수 (선택사항, 기본: 10)
+)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            LLM_Agent 클래스의 필수 파라미터와 선택 파라미터를 미리 확인하세요.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy1')">Copy</button>
                         <pre class="language-python"><code id="copy1">
@@ -216,6 +252,41 @@ print(response)
 
                 <details>
                     <summary>멀티 에이전트 활용하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('multi-agent-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="multi-agent-prerequisites">
+# 필요한 모듈 임포트
+from module.llm_agent import LLM_Agent
+
+# 멀티 에이전트용 LLM 에이전트 생성
+multi_agent = LLM_Agent(
+    model_name="gemma3n",           # 사용할 모델명
+    provider="ollama"               # LLM 제공자 (ollama/openai/genai)
+)
+
+# 첫 번째 에이전트 실행
+agent1_response = multi_agent(
+    system_prompt="You are a helpful assistant.",
+    user_message="리눅스에 대해서 설명해주세요.",
+    task=None                       # 추가 작업 내용 (선택사항)
+)
+
+# 두 번째 에이전트 실행 (첫 번째 응답 활용)
+agent2_response = multi_agent(
+    system_prompt="You are a helpful assistant.",
+    user_message="앞선 답변을 읽고 내용을 보충해 주세요",
+    task=None,
+    multi_agent_response=agent1_response  # 이전 에이전트 응답을 전달
+)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            멀티 에이전트는 하나의 LLM_Agent 인스턴스를 여러 번 호출하여 순차적으로 작업을 처리하는 방식입니다.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy1-1')">Copy</button>
                         <pre class="language-python"><code id="copy1-1">
@@ -242,6 +313,49 @@ print("Agent 2 Response:", agent2)
 
                 <details>
                     <summary>모든 에이전트의 응답 통합하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('integrate-agents-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="integrate-agents-prerequisites">
+# 필요한 모듈 임포트
+from module.llm_agent import LLM_Agent
+
+# 멀티 에이전트 시스템 생성
+multi_agent = LLM_Agent(
+    model_name="gemini-2.5-flash",  # 사용할 모델명
+    provider="genai",               # LLM 제공자
+    api_key="your_api_key"          # API 키
+)
+
+# 각 에이전트별 역할과 작업 정의
+multi_agent_tasks = {
+    "Agent 1": "환경 문제 분석 작업",
+    "Agent 2": "교통 인프라 계획 작업",
+    "Agent 3": "에너지 공급 방안 설계",
+    "Agent 4": "도시 공간 구조 최적화"
+}
+
+# 각 에이전트 실행 후 응답 수집
+agent_responses = {
+    name: multi_agent(system_prompt, user_prompt, task)
+    for name, task in multi_agent_tasks.items()
+}
+
+# 최종 통합 에이전트 실행
+final_response = multi_agent(
+    "통합 전문가 시스템 프롬프트",
+    "모든 전문가 의견을 종합하여 최종 결론을 내려주세요",
+    "최종 통합 작업",
+    list(agent_responses.values())  # 모든 에이전트 응답을 리스트로 전달
+)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            여러 전문가 에이전트의 의견을 하나의 최종 결론으로 통합하는 고급 멀티 에이전트 패턴입니다.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy1-2')">Copy</button>
                         <pre class="language-python"><code id="copy1-2">
@@ -299,6 +413,47 @@ print("Multi-Agent Responses:", multi_agent_responses)
 
                 <details>
                     <summary>LLM에이전트에 기억력 붙이기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('memory-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="memory-prerequisites">
+# 필요한 모듈 임포트
+import dotenv, os
+from module.llm_agent import LLM_Agent
+
+# 환경변수 로드
+dotenv.load_dotenv()
+
+# 메모리 기능이 있는 LLM 에이전트 생성
+llm = LLM_Agent(
+    model_name="gemini-2.5-flash",     # 사용할 모델명
+    provider="genai",                  # LLM 제공자
+    api_key=os.getenv("GENAI_API_KEY"), # API 키 (환경변수에서 불러오기)
+    session_id="user_chat_session",    # 대화 세션 구분 ID (선택사항)
+    max_history=10                     # 기억할 대화 수 (선택사항, 기본: 10)
+)
+
+# 메모리 기능 활성화하여 대화하기
+response = llm(
+    system_prompt="You are a helpful assistant.",
+    user_message="안녕하세요, 제 이름은 김철수입니다.",
+    memory=True                        # 메모리 기능 활성화 (중요!)
+)
+
+# 다음 대화에서 이전 내용 기억됨
+next_response = llm(
+    system_prompt="You are a helpful assistant.",
+    user_message="제 이름이 뭐라고 했죠?",
+    memory=True                        # 이전 대화 기억하여 응답
+)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            메모리 기능은 SQLite 데이터베이스에 대화 기록을 저장하여 연속적인 대화를 가능하게 합니다.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy1-3')">Copy</button>
                         <pre class="language-python"><code id="copy1-3">
@@ -327,6 +482,39 @@ while True:
                 </details>
                 <details>
                     <summary>LLM에이전트 멀티모달 활용하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('multimodal-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="multimodal-prerequisites">
+# 필요한 모듈 임포트
+import os, sys, json, re
+from module.llm_agent import Multi_modal_agent
+import dotenv
+
+# 멀티모달 에이전트 생성
+modal_agent = Multi_modal_agent(
+    model_name="gemma3:12b",     # 멀티모달 지원 모델 (이미지 처리 가능)
+    provider="ollama",           # "ollama" 또는 "genai" 지원
+    api_key=None                 # Ollama는 None, Gemini는 API 키 필요
+)
+
+# 이미지와 함께 AI에게 질문하기
+response = modal_agent(
+    system_prompt="당신은 영수증 분석 전문가입니다.",
+    user_prompt="이 영수증의 세부내역을 분석해주세요.",
+    image_path="receipt.jpg",    # 분석할 이미지 파일 경로
+    task=None                    # 추가 작업 내용 (선택사항)
+)
+
+print(response)  # AI가 이미지를 보고 분석한 결과
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            멀티모달 에이전트는 텍스트와 이미지를 동시에 처리할 수 있는 특별한 에이전트입니다. 영수증 분석, OCR, 이미지 설명 등에 활용됩니다.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy1-4')">Copy</button>
                         <pre class="language-python"><code id="copy1-4">
@@ -420,9 +608,266 @@ else:
                     </div>
                 </details>
 
-                <h3>4. Discord로 메시지 보내기</h3>
+                <h3>4. 멀티 에이전트 오디오 처리 파이프라인</h3>
+                <details>
+                    <summary>YouTube 오디오 → 시험 문제 생성 자동화</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('audio-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="audio-prerequisites">
+# 필요한 모듈 임포트
+from module.llm_agent import LLM_Agent
+from module.audio_tool import Audio
+from module.text_tool import Text_tool
+import dotenv, os, json
+
+# 오디오 처리기 생성
+audio_processor = Audio(
+    text_output="text_output",      # 변환된 텍스트를 저장할 폴더명
+    source_file="source_file",      # 원본 오디오 파일이 있는 폴더명
+    whisper_model="large-v3",       # Whisper 모델 크기 (base/small/medium/large/large-v3)
+    preferred_codec="mp3",          # 선호하는 오디오 코덱 (mp3/wav/m4a)
+    preferred_quality="192"         # 오디오 품질 (128/192/256/320)
+)
+
+# LLM 에이전트 생성
+llm_agent = LLM_Agent(
+    model_name="gemini-2.5-flash",  # 사용할 LLM 모델명
+    provider="genai",               # LLM 제공자 (ollama/openai/genai)
+    api_key=os.getenv("GENAI_API_KEY")  # API 키 (환경변수에서 불러오기)
+)
+
+# 텍스트 분할 도구 생성
+text_tool = Text_tool(
+    chunk_size=2000,                # 각 청크의 최대 문자 수
+    overlap=200,                    # 청크 간 겹치는 문자 수 (연결성 유지용)
+    max_length=100                  # 파일명 최대 길이 제한
+)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>주요 파라미터:</strong> audio_processor는 Whisper 모델과 출력 경로를 설정하고, llm_agent는 사용할 LLM과 API 키를 설정하며, text_tool은 텍스트 분할 방식을 설정합니다.
+                        </div>
+                    </div>
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>전체 파이프라인 개요</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('audio-pipeline-overview')">Copy</button>
+                        <pre class="language-python"><code id="audio-pipeline-overview">
+# 멀티 에이전트 오디오 처리 파이프라인
+# YouTube 오디오 → Whisper 전사 → 텍스트 청킹 → 3단계 에이전트 처리 → 시험 문제 생성
+
+from module.llm_agent import LLM_Agent
+from module.audio_tool import Audio
+from module.text_tool import Text_tool
+import dotenv
+import os
+import json
+
+def main():
+    print("오디오 에이전트 시작...")
+
+    # 1단계: 오디오 다운로드 및 텍스트 변환
+    audio_processor = Audio(
+        text_output="text_output",
+        source_file="source_file"
+    )
+
+    urls = ["https://youtu.be/VIDEO_ID_HERE"]  # 실제 YouTube URL로 교체
+
+    # 오디오 다운로드 및 Whisper 전사
+    result = audio_processor.transcribe_audio(whisper_model="large-v3")
+
+    # 2단계: 텍스트 청킹 및 멀티 에이전트 처리
+    dotenv.load_dotenv()
+    llm_agent = LLM_Agent(
+        model_name="gemini-2.5-flash",
+        provider="genai",
+        api_key=os.getenv("GENAI_API_KEY")
+    )
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            YouTube 강의 영상을 자동으로 시험 문제로 변환하는 완전 자동화 파이프라인입니다. 오디오 다운로드부터 문제 생성까지 모든 과정이 자동화되어 있습니다.
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>3단계 에이전트 프롬프트 설계</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('audio-agent-prompts')">Copy</button>
+                        <pre class="language-python"><code id="audio-agent-prompts">
+# 순차적 멀티 에이전트 프롬프트 설계
+agent_user_prompt = {
+    "agent1": """주어진 텍스트에서 기출문제 출제에 활용할 수 있는 핵심 개념과 용어를 추출하세요.
+    각 개념과 용어는 명확하고 구체적으로 추출하되, 시험 문제로 만들 수 있는 중요한 내용들을 중심으로 선별하세요.
+    (중요: 키워드 중심으로 추출하고, 너무 일반적이거나 사소한 내용은 제외하세요.)
+    다음 JSON 형식으로 정확히 생성하세요: {'concepts_and_terms': ['개념1', '개념2', ...]}
+    중요: 반드시 RAW DATA 내에서 추출하세요.""",
+
+    "agent2": """앞서 추출된 개념과 용어에 해당하는 내용을 바탕으로 4지선다 객관식 문제를 생성하세요.
+    각 문제는 실제 기출문제 수준의 난이도와 형식을 갖춰야 합니다.
+    다음 JSON 형식으로 정확히 생성하세요: [{'question': '문제 내용', 'options': ['선택지1', '선택지2', '선택지3', '선택지4'], 'answer': '정답', 'explanation': '상세한 해설'}].
+    문제는 3-5개 생성하세요. 중요: 반드시 RAW DATA 내에서 추출하세요.""",
+
+    "agent3": """agent2가 생성한 문제들을 검토하고, 다음 사항들을 확인 및 수정하세요:
+    1. 오타 및 문법 오류 수정
+    2. 논리적 오류 및 모호한 표현 수정
+    3. 원본데이터가 잘못되었다고 의심되는 경우 검토가 필요한 문제 목록 작성
+    최종 결과를 JSON 형식으로 출력하세요.
+    중요: 모든 문자열에 큰따옴표(")만 사용하고, JSON 외 다른 텍스트는 절대 포함하지 마세요.
+    중요: 반드시 RAW DATA 내에서 추출하세요.
+
+    {"concepts_and_terms": ["개념1", "개념2"], "questions": [{"question": "문제내용",
+    "options": ["선택1", "선택2", "선택지3", "선택지4"], "answer": "정답", "explanation":
+    "해설내용"}],"검토가 필요한 문제 목록": ["문제1", "문제2"], "오타 및 수정사항": ["수정1(원표기)", "수정2(원표기)"]}"""
+}
+
+agent_system_prompt = {
+    "agent1": "당신은 교육 전문가입니다. 주어진 텍스트에서 중요한 개념과 용어를 추출하는 역할을 합니다.",
+    "agent2": "당신은 시험 문제 출제 전문가입니다. 주어진 개념과 용어를 바탕으로 객관식 시험 문제를 출제하는 역할을 합니다.",
+    "agent3": "당신은 교정 전문가입니다. 주어진 텍스트의 오타, 문법, 논리적 오류를 검토하고 수정하는 역할을 합니다."
+}
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>3단계 에이전트 역할:</strong> Agent1(개념 추출) → Agent2(문제 생성) → Agent3(품질 검토). "RAW DATA 내에서만 추출" 제약으로 할루시네이션을 방지합니다.
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>텍스트 청킹 및 순차 처리</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('audio-chunking-process')">Copy</button>
+                        <pre class="language-python"><code id="audio-chunking-process">
+# 텍스트 청킹 및 순차적 에이전트 처리
+text_tool = Text_tool(chunk_size=2000, overlap=200, max_length=100)
+all_chunks = []
+
+# JSON 파일 읽고 청크 분할
+for json_file in json_files:
+    with open(json_file, 'r', encoding='utf-8') as file:
+        json_content = json.load(file)
+
+    chunks = text_tool.split_text_with_overlap(json_content.get("text", ""))
+    all_chunks.extend(chunks)
+
+order = ["agent1", "agent2", "agent3"]
+
+# 각 청크에 대해 에이전트 순차 실행
+for i, chunk in enumerate(all_chunks):
+    print(f"\n=== 청크 {i+1}/{len(all_chunks)} 처리 중 ===")
+
+    # 순차적으로 에이전트 실행 (멀티 에이전트 방식)
+    agent_responses = {}
+    current_input = chunk
+
+    for agent_name in order:
+        print(f"{agent_name} 실행 중...")
+        response = llm_agent(
+            agent_system_prompt[agent_name],
+            agent_user_prompt[agent_name],
+            task=current_input
+        )
+        agent_responses[agent_name] = response
+        current_input = response  # 다음 에이전트의 입력으로 사용
+
+    # agent3의 응답을 최종 결과로 사용 및 저장
+    final_output = agent_responses["agent3"]
+    output_filename = f"final_output_chunk_{i+1}"
+    save_foldername = "final_outputs"
+
+    text_tool.save_result_json(final_output, output_filename, save_foldername)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>순차 처리 로직:</strong> 각 청크를 3단계 에이전트가 순차적으로 처리하여 개념 추출 → 문제 생성 → 품질 검토 과정을 거칩니다. 최종 결과는 JSON 파일로 자동 저장됩니다.
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>생성된 결과 예시</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('audio-result-example')">Copy</button>
+                        <pre class="language-python"><code id="audio-result-example">
+# 생성된 JSON 결과 예시
+{
+  "concepts_and_terms": [
+    "관계대수", "순수관계연산자", "조인", "보타이기호",
+    "차집합", "집합연산자", "관계해석", "비절차적 언어"
+  ],
+  "questions": [
+    {
+      "question": "관계대수에서 '보타이기호'는 어떤 연산자를 의미하나요?",
+      "options": ["셀렉트(시그마)", "프로젝트(파이)", "조인", "디비전"],
+      "answer": "조인",
+      "explanation": "보타이기호(∗)는 관계대수에서 두 관계를 결합하는 조인 연산자를 나타낸다."
+    }
+  ],
+  "검토가 필요한 문제 목록": [],
+  "오타 및 수정사항": []
+}
+
+# 데이터베이스 저장 예시
+for chunk_file in chunk_files:
+    data = json.load(open(chunk_file))
+    for question in data["questions"]:
+        db.insert_question(
+            question=question["question"],
+            options=question["options"],
+            answer=question["answer"],
+            explanation=question["explanation"]
+        )
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>실제 활용:</strong> 생성된 JSON은 데이터베이스에 바로 저장 가능한 형태로 구조화되어 있습니다. 교육 플랫폼, 시험 시스템, 학습 앱 등에 즉시 적용할 수 있습니다.
+                        </div>
+                    </div>
+                </details>
+
+                <h3>5. Discord로 메시지 보내기</h3>
                 <details>
                     <summary>LLM응답 결과를 Discord로 전송하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('discord-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="discord-prerequisites">
+# 필요한 모듈 임포트
+from module.discord import Send_to_discord
+from module.llm_agent import LLM_Agent
+
+# Discord 메시지 발송기 생성
+discord = Send_to_discord(
+    base_url="https://discord.com/api/webhooks/YOUR_WEBHOOK_URL",  # Discord 웹훅 URL (필수)
+    chunk_size=1900,                      # 한 번에 보낼 메시지 최대 길이 (선택, 기본: 1900)
+    overlap=0                             # 분할된 메시지 간 겹침 문자 수 (선택, 기본: 0)
+)
+
+# LLM 에이전트 생성 및 응답 받기
+agent = LLM_Agent(
+    model_name="gemma3:12b",              # 사용할 모델명
+    provider="ollama",                    # LLM 제공자
+    api_key=None                          # API 키 (ollama는 None)
+)
+
+response = agent(
+    system_prompt="당신은 유능한 비서입니다.",
+    user_message="프랑스의 수도는 어디인가요?"
+)
+
+# AI 응답을 Discord로 전송
+discord.send_message(response)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            Discord 웹훅 URL은 Discord 채널 설정에서 생성할 수 있습니다. 메시지 길이 제한을 고려하여 적절한 chunk_size를 설정하세요.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy2')">Copy</button>
                         <pre class="language-python"><code id="copy2">
@@ -448,6 +893,45 @@ discord.send_message(response)
 
                 <details>
                     <summary>메시지 청크 분할 및 겹침 설정하기</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 사전 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('chunk-discord-prerequisites')">Copy</button>
+                        <pre class="language-python"><code id="chunk-discord-prerequisites">
+# 필요한 모듈 임포트
+from module.discord import Send_to_discord
+from module.llm_agent import LLM_Agent
+
+# 긴 메시지 자동 분할 Discord 발송기 생성
+discord = Send_to_discord(
+    base_url="https://discord.com/api/webhooks/YOUR_WEBHOOK_URL",
+    chunk_size=1900,                     # 각 메시지 청크 최대 크기 (Discord 2000자 제한 고려)
+    overlap=50                           # 청크 간 겹침 문자 수 (연결성 유지용)
+)
+
+# 여러 에이전트로 긴 응답 생성
+multi_agent = LLM_Agent(
+    model_name="gemini-2.5-flash",       # 사용할 모델명
+    provider="genai",                    # LLM 제공자
+    api_key="your_api_key"               # API 키
+)
+
+# 긴 응답을 생성하는 멀티 에이전트 실행
+long_response = multi_agent(
+    "당신은 도시 계획 전문가입니다.",
+    "지속 가능한 도시 설계 방안을 상세히 제시하세요.",
+    "5000자 이상의 상세한 도시 계획서를 작성한다."
+)
+
+# 긴 응답을 자동으로 분할하여 Discord에 순차 전송
+discord.send_message(long_response)     # 자동으로 1900자씩 나누어 전송
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            멀티 에이전트의 긴 응답을 Discord 메시지 제한에 맞게 분할하여 전송하는 고급 기능입니다.
+                        </div>
+                    </div>
                     <div class="code-container">
                         <button class="copy_button" onclick="copy_button('copy2-1')">Copy</button>
                         <pre class="language-python"><code id="copy2-1">

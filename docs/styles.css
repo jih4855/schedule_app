@@ -9,6 +9,7 @@
 body {
     background-color: #1a1a1a;  /* 어두운 회색 */
     color: #e0e0e0;            /* 밝은 회색 텍스트 */
+    font-size: 16px;           /* 기본 폰트 크기 증가 (14px → 16px) */
 }
 
 summary {
@@ -51,6 +52,7 @@ summary {
 /* 제목 스타일 */
 h1, h2 {
     color: #ffffff;
+    font-size: 2.2em;         /* h1, h2 크기 증가 */
 }
 
 h3, h4, h5, h6 {
@@ -59,6 +61,7 @@ h3, h4, h5, h6 {
     margin-top: 40px;
     margin-bottom: 20px;
     padding-top: 15px;
+    font-size: 1.4em;          /* h3-h6 크기 증가 */
 }
 
 /* 링크 색상 조정 */
@@ -84,9 +87,9 @@ a {
     background: #fbfbfb;
     color: rgb(10, 10, 10);
     border: none;
-    padding: 6px 10px;
+    padding: 8px 12px;         /* 버튼 패딩 증가 */
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 13px;           /* 버튼 폰트 크기 증가 (11px → 13px) */
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -109,8 +112,8 @@ pre {
 
 code {
     font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 15px;           /* 코드 폰트 크기 증가 (13px → 15px) */
+    line-height: 1.5;          /* 줄 간격도 약간 증가 */
     color: #fbfffb;
     white-space: pre-wrap;
 }
@@ -209,8 +212,8 @@ code .prop {
 var {
     color: rgb(138, 111, 246);
     font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 15px;           /* var 태그 폰트 크기도 증가 (13px → 15px) */
+    line-height: 1.5;          /* 줄 간격도 증가 */
 }
 
 /* 레이아웃 */
@@ -225,15 +228,15 @@ html {
 
 /* 사이드바 스타일 */
 .sidebar {
-    width: 260px;
-    flex: 0 0 260px;
+    width: 300px;                      /* 260px → 300px로 증가 (+40px) */
+    flex: 0 0 300px;                   /* flex-basis도 동일하게 조정 */
     height: calc(100vh - var(--nav-h));
     position: sticky;
     top: var(--nav-h);
     overflow: auto;
     background: #23262a;
     border-right: 1px solid #2f3338;
-    padding: 16px 12px;
+    padding: 16px 16px;                /* 좌우 패딩도 증가 (12px → 16px) */
     z-index: 1020;                     /* sidebar도 적절한 z-index 설정 */
 }
 
@@ -241,7 +244,7 @@ html {
     color: #fff;
     font-weight: 700;
     margin: 4px 8px 10px;
-    font-size: 16px;
+    font-size: 18px;           /* 사이드바 제목 크기 증가 (16px → 18px) */
 }
 
 .sidebar ul {
@@ -256,11 +259,14 @@ html {
 
 .sidebar a {
     display: block;
-    padding: 6px 10px;
+    padding: 8px 12px;         /* 사이드바 링크 패딩 증가 */
     color: #cbd5e1;
     text-decoration: none;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 15px;           /* 사이드바 링크 폰트 크기 증가 (13px → 15px) */
+    white-space: nowrap;       /* 텍스트 줄바꿈 방지 */
+    overflow: hidden;          /* 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis;   /* 넘치면 ... 표시 */
 }
 
 .sidebar a:hover {
@@ -284,7 +290,8 @@ html {
     flex: 1;
     min-width: 0;
     padding: 0 8px 80px;
-    line-height: 1.6;
+    line-height: 1.7;           /* 줄 간격 증가 (1.6 → 1.7) */
+    font-size: 16px;            /* 컨텐츠 폰트 크기 명시 */
     z-index: 1010;                     /* 본문은 가장 낮은 z-index */
     position: relative;                /* z-index가 작동하도록 position 설정 */
 }
