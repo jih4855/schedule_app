@@ -30,18 +30,150 @@
         <main class="content">
             <!-- 기존 문서 컨텐츠 래핑 -->
             <div class="docs-section">
-                <h3>1. 업데이트 현황</h3>
-                <p class="section-summary">현재까지 구현된 기능에 대한 요약입니다.</p>
-                <ul>
-                    <li>LLM 에이전트 생성 및 응답 받기 (ollama, openai, genai(gemini) 지원)</li>
-                    <li>Discord로 메시지 보내기 (메시지 청크 분할 및 겹침 지원)</li>
-                    <li>음성 파일을 텍스트로 변환하기 (whisper 사용)</li>
-                    <li>텍스트 청크 분할 및 겹침 지원</li>
-                    <li>2025/09/17 에이전트 메모리 기능 구현</li>
-                    <li>2025/09/21 LLM_Agent 클래스에 __call__ 매직 메서드가 추가되어 agent.generate_response() 대신 agent() 직접 호출이 가능해졌습니다.</li>
-                    <li>2025/09/21 LLM_Agent 멀티모달 사용 추가</li>
-                    <li>2025/09/22 멀티 에이전트 시험 문제 생성기 예제 추가 (YouTube → 시험 문제 자동 생성)</li>
-                </ul>
+                <h3>1. 설치 방법 및 빠른 시작</h3>
+                <details>
+                    <summary>프로젝트 설치 및 환경 설정</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            <strong>📋 시스템 요구사항</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('system-requirements')">Copy</button>
+                        <pre class="language-bash"><code id="system-requirements">
+# 시스템 요구사항
+- Python 3.10 이상
+- pip (패키지 관리자)
+- ffmpeg (음성 처리 시 필요, 선택사항)
+
+# ffmpeg 설치 (선택사항)
+# Windows (Chocolatey):
+choco install ffmpeg
+
+# macOS (Homebrew):
+brew install ffmpeg
+
+# Ubuntu/Debian:
+sudo apt install ffmpeg
+
+# 설치 확인
+ffmpeg -version
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #f39c12; font-size: 13px; line-height: 1.4;">
+                            ffmpeg는 음성 처리 기능을 사용할 때만 필요합니다. 기본 LLM 에이전트 사용에는 필요하지 않습니다.
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>1️⃣ 저장소 클론</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('clone-repo')">Copy</button>
+                        <pre class="language-bash"><code id="clone-repo">
+git clone https://github.com/jih4855/AI-Multi-Agent-Toolkit.git
+cd AI-Multi-Agent-Toolkit
+                        </code></pre>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>2️⃣ 가상환경 생성 (권장)</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('create-venv')">Copy</button>
+                        <pre class="language-bash"><code id="create-venv">
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+                        </code></pre>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>3️⃣ 의존성 설치</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('install-deps')">Copy</button>
+                        <pre class="language-bash"><code id="install-deps">
+pip install -r requirements.txt
+                        </code></pre>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>4️⃣ 환경 변수 설정</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('setup-env')">Copy</button>
+                        <pre class="language-bash"><code id="setup-env">
+# .env.example을 .env로 복사
+cp .env.example .env
+
+# .env 파일을 편집하여 실제 API 키로 교체
+# GOOGLE_API_KEY=your_google_api_key_here
+# OPENAI_API_KEY=your_openai_api_key_here
+# DISCORD_WEBHOOK_URL=your_discord_webhook_url_here
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #569cd6; font-size: 13px; line-height: 1.4;">
+                            <strong>참고:</strong> Ollama 사용 시에는 API 키가 필요하지 않습니다.
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>빠른 시작 가이드</summary>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #e74c3c; font-size: 13px; line-height: 1.4;">
+                            <strong>🚀 기본 LLM 에이전트 사용</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('basic-usage')">Copy</button>
+                        <pre class="language-python"><code id="basic-usage">
+from module.llm_agent import LLM_Agent
+
+# Ollama 사용 (로컬, API 키 불필요)
+agent = LLM_Agent(model_name="gemma:2b", provider="ollama")
+response = agent.generate_response(
+    system_prompt="당신은 도움이 되는 비서입니다.",
+    user_message="안녕하세요, 자기소개를 해주세요."
+)
+print(response)
+                        </code></pre>
+                    </div>
+
+                    <div class="code-container">
+                        <div style="margin-bottom: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #e74c3c; font-size: 13px; line-height: 1.4;">
+                            <strong>🔑 환경 변수를 사용한 API 연동</strong>
+                        </div>
+                        <button class="copy_button" onclick="copy_button('api-usage')">Copy</button>
+                        <pre class="language-python"><code id="api-usage">
+import os
+from dotenv import load_dotenv
+from module.llm_agent import LLM_Agent
+
+load_dotenv()
+
+# Google Gemini 사용
+agent = LLM_Agent(
+    model_name="gemini-2.5-flash",
+    provider="genai",
+    api_key=os.getenv("GOOGLE_API_KEY")
+)
+
+response = agent(
+    system_prompt="You are a helpful assistant.",
+    user_message="Explain machine learning in simple terms."
+)
+print(response)
+                        </code></pre>
+                        <div style="margin-top: 15px; padding: 12px; background: #2a2d33; border-left: 3px solid #e74c3c; font-size: 13px; line-height: 1.4;">
+                            <strong>API 키 설정:</strong><br>
+                            • <strong>Google Gemini:</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>에서 발급<br>
+                            • <strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a>에서 발급<br>
+                            • <strong>Discord 웹훅:</strong> Discord 서버 설정 > 연동 > 웹후크에서 생성
+                        </div>
+                    </div>
+                </details>
 
                 <h3>2. 모듈 소개</h3>
 
