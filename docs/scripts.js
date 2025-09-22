@@ -223,4 +223,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 모든 details 요소를 기본으로 접힌 상태로 설정
     document.querySelectorAll('.docs-section details').forEach(d => { d.open = false; });
+
+    // 첫 번째 섹션을 기본적으로 활성화
+    setTimeout(() => {
+        const firstLink = document.querySelector('.sidebar a');
+        if (firstLink) {
+            document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+            firstLink.classList.add('active');
+        }
+    }, 100);
 });
