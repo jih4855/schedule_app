@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Documentation
-charset: utf-8
+permalink: /docs/
 ---
 
 # AI Multi-Agent Toolkit Documentation

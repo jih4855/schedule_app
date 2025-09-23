@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Dev Log
-charset: utf-8
+permalink: /dev-log/
 ---
 
 # 개발 로그 (Dev Log)
