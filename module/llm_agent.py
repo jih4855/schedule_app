@@ -63,7 +63,7 @@ class LLM_Agent:
             # multi_agent_response가 있으면 추가
             if multi_agent_response:
                 full_context += f' 다른 에이전트의 응답: {str(multi_agent_response)}'
-            
+            # 메모리 기능이 활성화된 경우, 이전 대화 기록을 불러와서 포함
             messages.append({"role": "user", "content": full_context})
 
             # 한 번만 호출
@@ -71,7 +71,7 @@ class LLM_Agent:
             # print(messages) # 디버깅용 출력
             # 메모리에 저장
             if memory:
-                history.append({"role": "user", "content": user_message})
+                history.append({"role": "user", "content": full_context})
                 history.append({"role": "assistant", "content": response["message"]["content"]})
                 self.memory_manager.save_history(self.session_id, history)
             return response["message"]["content"]
@@ -148,7 +148,7 @@ class LLM_Agent:
             )
             # 메모리에 저장
             if memory:
-                history.append({"role": "user", "content": user_message})
+                history.append({"role": "user", "content": full_context})
                 history.append({"role": "assistant", "content": response.choices[0].message.content})
                 self.memory_manager.save_history(self.session_id, history)
             return response.choices[0].message.content

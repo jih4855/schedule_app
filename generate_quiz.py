@@ -11,22 +11,26 @@ def main():
     # --- 1. 오디오 파일 다운로드 및 텍스트 변환 ---
     print("\n1단계: 오디오 다운로드 및 변환")
 
+    # Audio 인스턴스 생성
+    text_output = "test_text"
+    source_file = "source_test"
+
     audio_processor = Audio(
-        text_output="text_output",
-        source_file="source_file"
+        text_output=text_output,
+        source_file=source_file
     )
 
     urls = [
-        "https://youtu.be/Youtub_e_Video_ID"  # 여기에 실제 YouTube URL을 넣으세요.
+        "https://youtu.be/KSC8CQCMuvk?si=TtSPawZJPeKClfTe"  # 여기에 실제 YouTube URL을 넣으세요.
     ]
 
     try:
         # 오디오 다운로드
-        #audio_processor.download_youtube_audio(urls=urls)
+        audio_processor.download_youtube_audio(urls=urls)
 
         # 텍스트 변환
         result = audio_processor.transcribe_audio(
-            whisper_model="large-v3"
+            whisper_model="small"
 )
         print(f"변환 완료: {result}")
 
@@ -38,7 +42,7 @@ def main():
     print("\n2단계: LLM 에이전트 처리")
 
     # 폴더 존재 확인
-    text_folder = "text_output"
+    text_folder = text_output
     if not os.path.exists(text_folder):
         print(f"오류: {text_folder} 폴더가 없습니다.")
         return
@@ -64,7 +68,7 @@ def main():
     agent_user_prompt = {
         "agent1": "주어진 텍스트에서 기출문제 출제에 활용할 수 있는 핵심 개념과 용어를 추출하세요. 각 개념과 용어는 명확하고 구체적으로 추출하되, 시험 문제로 만들 수 있는 중요한 내용들을 중심으로 선별하세요.(중요: 키워드 중심으로 추출하고, 너무 일반적이거나 사소한 내용은 제외하세요.) 다음 JSON 형식으로 정확히 생성하세요: {'concepts_and_terms': ['개념1', '개념2', ...]} 중요: 반드시 RAW DATA 내에서 추출하세요.",
 
-        "agent2": "앞서 추출된 개념과 용어에 해당하는 내용을 바탕으로 4지선다 객관식 문제를 생성하세요. 각 문제는 실제 기출문제 수준의 난이도와 형식을 갖춰야 합니다. 다음 JSON 형식으로 정확히 생성하세요: [{'question': '문제 내용', 'options': ['선택지1', '선택지2', '선택지3', '선택지4'], 'answer': '정답', 'explanation': '상세한 해설'}]. 문제는 3-5개 생성하세요. 중요: 반드시 RAW DATA 내에서 추출하세요.",
+        "agent2": "앞서 추출된 개념과 용어에 해당하는 내용을 바탕으로 4지선다 객관식 문제를 생성하세요. 각 문제는 실제 기출문제 수준의 난이도와 형식을 갖춰야 합니다. 다음 JSON 형식으로 정확히 생성하세요: [{'question': '문제 내용', 'options': ['선택지1', '선택지2', '선택지3', '선택지4'], 'answer': '정답', 'explanation': '상세한 해설'}]. 중요: 반드시 RAW DATA 내에서 추출하세요.",
 
         "agent3": """
         agent2가 생성한 문제들을 검토하고, 다음 사항들을 확인 및 수정하세요:
@@ -78,7 +82,7 @@ def main():
 
         {"concepts_and_terms": ["개념1", "개념2"], "questions": [{"question": "문제내용",
         "options": ["선택1", "선택2", "선택3", "선택4"], "answer": "정답", "explanation":
-        "해설내용"}],"검토가 필요한 문제 목록": ["문제1", "문제2"], "오타 및 수정사항": ["수정1(원표기)", "수정2(원표기)"]}
+        "해설내용"}],"검토가 필요한 문제 목록(이유를 상세히 기재):": ["문제1", "문제2"], "오타 및 수정사항": ["수정1(원표기)", "수정2(원표기)"]}
         """
     }
 
@@ -90,7 +94,7 @@ def main():
 
     order = ["agent1", "agent2", "agent3"]
 
-    # 텍스트 도구 생성 (루프 밖으로 이동)
+    # 텍스트 도구 생성
     text_tool = Text_tool(chunk_size=2000, overlap=200, max_length= 100)
     all_chunks = []
 
@@ -115,7 +119,7 @@ def main():
 
     print(f"\n총 {len(all_chunks)}개 청크 처리 시작")
 
-    # 각 청크에 대해 에이전트 순차 실행 (수정된 로직)
+    # 각 청크에 대해 에이전트 순차 실행
     for i, chunk in enumerate(all_chunks):
         print(f"\n=== 청크 {i+1}/{len(all_chunks)} 처리 중 ===")
               # 청크 내용 확인 (추가!)
@@ -145,9 +149,9 @@ def main():
             print(f"\n=== 최종 결과 (청크 {i+1}) ===")
             print(final_output[:500] + "..." if len(str(final_output)) > 500 else final_output)
 
-            # 안전한 파일 저장
+            # 파일 저장
             output_filename = f"final_output_chunk_{i+1}"
-            save_foldername = "final_outputs"
+            save_foldername = "final_outputs_test"
 
             text_tool.save_result_json(final_output, output_filename, save_foldername)
 
@@ -156,8 +160,6 @@ def main():
             continue
 
     print("\n모든 처리 완료!")
-
-
 
 if __name__ == "__main__":
     main()
