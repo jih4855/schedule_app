@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css?v=7">
+    <title>AI Multi-Agent Toolkit - Dev Log</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%2323262a'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='72'%3E📝%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">AI Multi-Agent Toolkit</a>
+            <div class="flex-grow-1"></div>
+            <div class="navbar-nav d-flex flex-row" style="position: absolute; left: 33.33%; transform: translateX(-50%);">
+                <a class="nav-link me-3" href="https://github.com/jih4855/AI-Multi-Agent-Toolkit" target="_blank">GitHub</a>
+                <a class="nav-link" href="index.html">← Back to Docs</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <main class="content">
+            <div class="docs-section">
+                <h1>개발 로그 (Dev Log)</h1>
+                <p class="section-summary">개발 과정에서 발견한 문제, 해결 방법, 시행착오, 팁 등을 기록하는 공간입니다.</p>
+
+                <hr>
+
+                <h3>2025-09-23: 코드 하이라이팅 문제 해결</h3>
+                <ul>
+                    <li><strong>증상:</strong> class="tok-kw"가 텍스트로 노출됨</li>
+                    <li><strong>원인:</strong> 정규식 치환 시 HTML 이스케이프 미흡</li>
+                    <li><strong>해결:</strong> escapeHtml 함수 개선, code-vscode 클래스 추가</li>
+                </ul>
+
+                <h4>LLM_agent 모듈 메모리 관련 로직 변경</h4>
+                <p><strong>발견한 문제:</strong> 메모리 저장 시 실제 LLM에 전송한 내용과 다른 내용이 저장되는 문제</p>
+                <p><strong>해결 방법:</strong></p>
+                <div class="code-container">
+                    <pre><code>client = OpenAI(api_key=self.api_key)
+
+# messages 리스트 구성 (Ollama와 유사한 방식)
+messages = [
+    {"role": "system", "content": system_prompt}
+]
+# 메모리 기능이 활성화된 경우, 이전 대화 기록을 불러와서 포함
+history = []
+if memory:
+    history = self.memory_manager.get_history(self.session_id)
+    if self.max_history and len(history) > self.max_history:
+        history = history[-self.max_history:]
+    messages.extend(history)
+
+# 모든 내용을 하나의 리스트로 결합
+full_context = user_message
+# task가 있으면 추가
+if task:
+    full_context += f' task: {str(task)}'
+# multi_agent_response가 있으면 추가
+if multi_agent_response:
+    full_context += f' 다른 에이전트의 응답: {str(multi_agent_response)}'
+# 메모리 기능이 활성화된 경우, 이전 대화 기록을 불러와서 포함
+messages.append({"role": "user", "content": full_context})
+
+response = client.chat.completions.create(
+    model=self.model_name,
+    messages=messages
+)
+# 메모리에 저장
+if memory:
+    # 수정 전: user_message 저장 (문제)
+    # 수정 후: full_context 저장 (해결)
+    history.append({"role": "user", "content": full_context})
+    history.append({"role": "assistant", "content": response.choices[0].message.content})
+    self.memory_manager.save_history(self.session_id, history)
+return response.choices[0].message.content</code></pre>
+                </div>
+                <p><strong>핵심 수정사항:</strong> <code>user_message</code> → <code>full_context</code>로 수정 (유저 메시지만 저장하던 방식에서 LLM에 전달된 모든 텍스트 저장)</p>
+
+                <hr>
+
+                <h3>2025-09-22: 결과물 폴더 gitignore 처리</h3>
+                <ul>
+                    <li><strong>증상:</strong> AI 생성 결과물이 git에 계속 추가됨</li>
+                    <li><strong>해결:</strong> .gitignore에 폴더 추가, git rm --cached로 제거</li>
+                </ul>
+
+                <hr>
+
+                <h3>2025-09-21: 정적 문서 구조 설계</h3>
+                <ul>
+                    <li><strong>목적:</strong> GitHub Pages에서 간단하게 볼 수 있는 문서 구조 필요</li>
+                    <li><strong>선택:</strong> index.html + scripts.js + styles.css 분리, Bootstrap 최소 사용</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
