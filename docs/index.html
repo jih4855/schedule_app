@@ -14,22 +14,21 @@
     <script src="scripts.js?v=5"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI Multi-Agent Toolkit</a>
-            <div class="flex-grow-1"></div>
-            <div class="navbar-nav d-flex flex-row" style="position: absolute; left: 33.33%; transform: translateX(-50%);">
-                <a class="nav-link me-3" href="https://github.com/jih4855/AI-Multi-Agent-Toolkit" target="_blank">GitHub</a>
-                <a class="nav-link" href="dev-log.html">Dev Log</a>
-            </div>
-        </div>
-    </nav>
-
     <!-- 레이아웃 래퍼 추가 -->
     <div class="layout">
         <nav class="sidebar">
             <div class="sidebar-title">AI Toolkit 사용법</div>
             <ul id="sidebar-nav"></ul>
+
+            <!-- 하단 링크 버튼들 -->
+            <div class="sidebar-footer">
+                <a href="https://github.com/jih4855/AI-Multi-Agent-Toolkit" target="_blank" class="sidebar-link">
+                    GitHub
+                </a>
+                <a href="dev-log.html" class="sidebar-link">
+                    Dev Log
+                </a>
+            </div>
         </nav>
 
         <main class="content">
@@ -797,6 +796,9 @@ def main():
         overlap=200,        # 청크 간 겹치는 부분
         max_length=100      # 최대 처리 길이
     )
+    # STT 결과 JSON에서 텍스트를 추출할 키 값 설정
+    key_value = "text"  #변환된 STT 텍스트가 저장된 JSON 키 값 확인 후 설정
+
     all_chunks = []
 
     # 전사된 텍스트 파일들을 작은 단위로 분할
@@ -806,8 +808,8 @@ def main():
             with open(json_file, 'r', encoding='utf-8') as file:
                 json_content = json.load(file)
 
-            # 텍스트를 작은 청크로 분할
-            chunks = text_tool.split_text_with_overlap(json_content.get("text", ""))
+            # 텍스트를 작은 청크로 분할 (개선: 하드코딩 제거)
+            chunks = text_tool.split_text_with_overlap(json_content.get(key_value, ""))
             all_chunks.extend(chunks)
             print(f"   ✅ {len(chunks)}개 텍스트 청크 생성")
 

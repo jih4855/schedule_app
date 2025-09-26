@@ -5,22 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css?v=7">
+    <!-- Highlight.js 스타일 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <title>AI Multi-Agent Toolkit - Dev Log</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%2323262a'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='72'%3E📝%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">AI Multi-Agent Toolkit</a>
-            <div class="flex-grow-1"></div>
-            <div class="navbar-nav d-flex flex-row" style="position: absolute; left: 33.33%; transform: translateX(-50%);">
-                <a class="nav-link me-3" href="https://github.com/jih4855/AI-Multi-Agent-Toolkit" target="_blank">GitHub</a>
-                <a class="nav-link" href="index.html">← Back to Docs</a>
-            </div>
-        </div>
-    </nav>
-
     <div class="layout">
+        <nav class="sidebar">
+            <div class="sidebar-title">Dev Log</div>
+            <ul id="devlog-nav">
+                <li><a href="#2025-09-27">2025-09-27: LLM의 기억법</a></li>
+                <li><a href="#2025-09-23">2025-09-23: 코드 하이라이팅 문제</a></li>
+                <li><a href="#2025-09-22">2025-09-22: 결과물 폴더 처리</a></li>
+                <li><a href="#2025-09-21">2025-09-21: 정적 문서 구조</a></li>
+            </ul>
+
+            <!-- 하단 링크 버튼들 -->
+            <div class="sidebar-footer">
+                <a href="https://github.com/jih4855/AI-Multi-Agent-Toolkit" target="_blank" class="sidebar-link">
+                    GitHub
+                </a>
+                <a href="index.html" class="sidebar-link">
+                    Back to Docs
+                </a>
+            </div>
+        </nav>
+
         <main class="content">
             <div class="docs-section">
                 <h1>개발 로그 (Dev Log)</h1>
@@ -28,7 +39,64 @@
 
                 <hr>
 
-                <h3>2025-09-23: 코드 하이라이팅 문제 해결</h3>
+                <h3 id="2025-09-27">2025-09-27: LLM의 기억법</h3>
+                <p><strong>학습 내용:</strong> LLM 에이전트의 메모리 시스템 작동 원리</p>
+                <ol>
+                    <li><strong>프로바이더별 포맷:</strong> 딕셔너리 리스트, 문자열 등 다양한 형식으로 쿼리를 보냄 (구현완료)</li>
+                    <li><strong>단기기억:</strong> DB에 저장된 일정 수의 대화 기록을 쿼리에 더해서 보냄 (구현완료)</li>
+                    <li><strong>장기기억:</strong> 저장된 단기기억 중 주요 정보를 별도 DB에 요약 및 정리 후 쿼리에 더해서 보냄 (메모리 압축 및 요약 기능 구현 예정)</li>
+                    <li><strong>외부지식/도구:</strong> LLM 판단 및 개발자 로직에 따라 쿼리에 더해서 보냄 (RAG, Function Calling 등 연동 기능 확장 예정)</li>
+                </ol>
+
+                <h4>구조 예시</h4>
+                <p><strong>LLM에 전송되는 메시지 구조 예시 (딕셔너리 리스트 - Ollama/OpenAI):</strong></p>
+                <div class="code-container">
+                    <pre><code>{
+  "messages": [
+    {"role": "system", "content": "당신은 도움이 되는 AI입니다."},
+    {"role": "assistant", "content": "장기메모리: 사용자는 Python 개발자, FastAPI 선호"},
+    {"role": "user", "content": "과거대화: FastAPI 라우터 구조에 대해 질문했어"},
+    {"role": "assistant", "content": "과거대화: FastAPI에서는 APIRouter를 사용해서 모듈화할 수 있습니다..."},
+    {"role": "user", "content": "과거대화: 그럼 의존성 주입은 어떻게 해?"},
+    {"role": "assistant", "content": "과거대화: Depends()를 사용해서 의존성을 주입할 수 있어요..."},
+    {"role": "user", "content": "Django와 FastAPI 성능 비교해줘"},
+    {"role": "user", "content": "RAG 검색결과: FastAPI 벤치마크 데이터..."}
+  ]
+}</code></pre>
+                </div>
+                <p><strong>주의:</strong> 딕셔너리 리스트 방식에서는 과거 대화와 현재 입력을 구분하기 위해 라벨링이 필요함</p>
+
+                <h4>메모리 라벨링 개선</h4>
+                <p><strong>문제:</strong> 과거 대화와 현재 질문이 구분되지 않아 LLM이 혼동</p>
+                <p><strong>해결:</strong> Ollama/OpenAI에서 과거 대화에 라벨 추가</p>
+                <div class="code-container">
+                    <pre><code># 수정 전 (라벨링 없음)
+messages.extend(history)  # 구분 불가
+
+# 수정 후 (라벨링 추가)
+for msg in history:
+    labeled_msg = {"role": msg["role"], "content": f'과거대화: {msg["content"]}'}
+    messages.append(labeled_msg)</code></pre>
+                </div>
+
+                <h4>메모리 기능 최적화</h4>
+                <p><strong>문제:</strong> LLM_Agent 생성 시 항상 MemoryManager가 초기화되어 불필요한 DB 파일 생성</p>
+                <p><strong>해결:</strong> memory=True일 때만 MemoryManager 생성하도록 수정</p>
+                <div class="code-container">
+                    <pre><code># 수정 전 (init에서 항상 생성)
+def __init__(self, ...):
+    self.memory_manager = MemoryManager()  # 불필요하게 항상 생성
+
+# 수정 후 (필요할 때만 생성)
+def _generate_ollama_response(self, ...):
+    if memory:
+        memory_manager = MemoryManager()  # 사용할 때만 생성
+        history = memory_manager.get_history(self.session_id)</code></pre>
+                </div>
+
+                <hr>
+
+                <h3 id="2025-09-23">2025-09-23: 코드 하이라이팅 문제 해결</h3>
                 <ul>
                     <li><strong>증상:</strong> class="tok-kw"가 텍스트로 노출됨</li>
                     <li><strong>원인:</strong> 정규식 치환 시 HTML 이스케이프 미흡</li>
@@ -81,7 +149,7 @@ return response.choices[0].message.content</code></pre>
 
                 <hr>
 
-                <h3>2025-09-22: 결과물 폴더 gitignore 처리</h3>
+                <h3 id="2025-09-22">2025-09-22: 결과물 폴더 gitignore 처리</h3>
                 <ul>
                     <li><strong>증상:</strong> AI 생성 결과물이 git에 계속 추가됨</li>
                     <li><strong>해결:</strong> .gitignore에 폴더 추가, git rm --cached로 제거</li>
@@ -89,7 +157,7 @@ return response.choices[0].message.content</code></pre>
 
                 <hr>
 
-                <h3>2025-09-21: 정적 문서 구조 설계</h3>
+                <h3 id="2025-09-21">2025-09-21: 정적 문서 구조 설계</h3>
                 <ul>
                     <li><strong>목적:</strong> GitHub Pages에서 간단하게 볼 수 있는 문서 구조 필요</li>
                     <li><strong>선택:</strong> index.html + scripts.js + styles.css 분리, Bootstrap 최소 사용</li>
@@ -97,5 +165,9 @@ return response.choices[0].message.content</code></pre>
             </div>
         </main>
     </div>
+
+    <!-- Highlight.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 </body>
 </html>
