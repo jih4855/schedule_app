@@ -8,7 +8,6 @@ class LLM_Agent:
         self.model_name = model_name
         self.provider = provider.lower()
         self.api_key = api_key
-        self.memory_manager = MemoryManager()
         self.session_id = session_id
         self.max_history = max_history
         if self.provider not in ['ollama', 'genai', 'openai']:
@@ -50,7 +49,8 @@ class LLM_Agent:
             # 메모리 기능이 활성화된 경우, 이전 대화 기록을 불러와서 포함
             history = []
             if memory:
-                history = self.memory_manager.get_history(self.session_id)
+                memory_manager = MemoryManager()
+                history = memory_manager.get_history(self.session_id)
                 if self.max_history and len(history) > self.max_history:
                     history = history[-self.max_history:]
                 messages.extend(history)
@@ -73,7 +73,7 @@ class LLM_Agent:
             if memory:
                 history.append({"role": "user", "content": full_context})
                 history.append({"role": "assistant", "content": response["message"]["content"]})
-                self.memory_manager.save_history(self.session_id, history)
+                memory_manager.save_history(self.session_id, history)
             return response["message"]["content"]
         except Exception as e:
             return f"Error generating response with Ollama: {e}"
@@ -89,7 +89,8 @@ class LLM_Agent:
             
             history = []
             if memory:
-                history = self.memory_manager.get_history(self.session_id)
+                memory_manager = MemoryManager()
+                history = memory_manager.get_history(self.session_id)
                 if self.max_history and len(history) > self.max_history:
                     history = history[-self.max_history:]
                 for msg in history:
@@ -109,7 +110,7 @@ class LLM_Agent:
                 history.append({"role": "user", "content": combined_prompt})
                 # 응답은 아직 없으므로 빈 문자열로 저장
                 history.append({"role": "assistant", "content": response.text})
-                self.memory_manager.save_history(self.session_id, history)
+                memory_manager.save_history(self.session_id, history)
             return response.text
         
         except Exception as e:
@@ -126,7 +127,8 @@ class LLM_Agent:
             # 메모리 기능이 활성화된 경우, 이전 대화 기록을 불러와서 포함
             history = []
             if memory:
-                history = self.memory_manager.get_history(self.session_id)
+                memory_manager = MemoryManager()
+                history = memory_manager.get_history(self.session_id)
                 if self.max_history and len(history) > self.max_history:
                     history = history[-self.max_history:]
                 messages.extend(history)
@@ -150,7 +152,7 @@ class LLM_Agent:
             if memory:
                 history.append({"role": "user", "content": full_context})
                 history.append({"role": "assistant", "content": response.choices[0].message.content})
-                self.memory_manager.save_history(self.session_id, history)
+                memory_manager.save_history(self.session_id, history)
             return response.choices[0].message.content
         except Exception as e:
             return f"Error generating response with OpenAI: {e}"
