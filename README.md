@@ -6,6 +6,8 @@
 
 Python 기반 LLM 에이전트 개발을 위한 도구모음과 실용 예제입니다. 여러 LLM 프로바이더 통합, 음성-텍스트 변환, Discord 연동 등을 지원합니다.
 
+> **📚 용도:** 이 프로젝트는 AI 및 LLM 기술 학습, 프로토타입 개발, 스크립트 테스트용으로 제작되었습니다.
+
 **📖 문서:** https://jih4855.github.io/AI-Multi-Agent-Toolkit/
 **📁 Repository:** https://github.com/jih4855/AI-Multi-Agent-Toolkit
 
@@ -337,3 +339,46 @@ sudo apt install ffmpeg
 # 설치 확인:
 ffmpeg -version
 ```
+
+## 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자유롭게 사용, 수정, 배포하실 수 있습니다.
+
+```
+MIT License
+
+Copyright (c) 2024 AI Multi-Agent Toolkit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## 기여하기
+
+오픈소스 프로젝트로서 여러분의 기여를 환영합니다!
+
+1. 프로젝트를 포크하세요
+2. 기능 브랜치를 생성하세요 (`git checkout -b feature/AmazingFeature`)
+3. 변경사항을 커밋하세요 (`git commit -m 'Add some AmazingFeature'`)
+4. 브랜치에 푸시하세요 (`git push origin feature/AmazingFeature`)
+5. Pull Request를 생성하세요
+
+## 문의 및 지원
+
+- GitHub Issues: 버그 리포트 및 기능 요청
+- GitHub Discussions: 일반적인 질문 및 토론
