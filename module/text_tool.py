@@ -8,8 +8,8 @@ class Text_tool:
         self.overlap = overlap
         self.max_length = max_length
 
-    
-    def split_text_with_overlap(self, text):
+
+    def split_text_with_overlap(self, text: str) -> list[str]:
         """
         텍스트를 겹침을 포함해서 청크로 분할
         """
@@ -44,7 +44,7 @@ class Text_tool:
             start = end - self.overlap
         return chunks
 
-    def safe_filename(self, filename):
+    def safe_filename(self, filename: str) -> str:
         """파일명을 안전하게 변환"""
         # 특수문자 제거 및 공백을 언더스코어로 변경
         safe_name = re.sub(r'[<>:"/\\|?*]', '', filename)
@@ -58,7 +58,8 @@ class Text_tool:
         return safe_name
 
 
-    def save_result_json(self, final_output, output_filename, save_foldername):
+    def save_result_json(self, final_output, output_filename: str, save_foldername: str):
+        """결과를 JSON 또는 텍스트 파일로 저장"""
         safe_output_filename = self.safe_filename(output_filename)
         safe_save_foldername = self.safe_filename(save_foldername)
         if not os.path.exists(safe_save_foldername):
