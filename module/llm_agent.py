@@ -157,25 +157,20 @@ class LLM_Agent:
         except Exception as e:
             return f"Error generating response with OpenAI: {e}"
 
-    def aggregate_responses(self, system_prompt:str, user_message:str, task:str=None, responses:list=None) -> str:
-        # 에이전트 응답만 메시지로 구성(중복 system/user 방지)
-        agent_msgs = []
-        for idx, resp in enumerate(responses or []):
-            agent_msgs.append({"role": "user", "content": f"Agent {idx+1} response: {resp}"})
-        
-        # 최종 메시지를 생성 (system/user는 generate_response에서 조립)
-        final_response = self.generate_response(system_prompt, user_message, task=task, multi_agent_response=agent_msgs)
-        return final_response
 
-    # 호환용 별칭: 기존 문서/예제에서 사용한 이름을 지원
-    def multi_agent_interaction(self, system_prompt:str, user_message:str, task:str=None, responses:list=None) -> str:
-        """
-        Scatter–Gather 스타일의 응답 집계. responses에는 개별 에이전트 응답 문자열 리스트를 전달.
-        내부적으로 aggregate_responses로 위임.
-        """
-        if responses is None:
-            responses = []
-        return self.aggregate_responses(system_prompt, user_message, task=task, responses=responses)
+    def aggregate_responses(self, system_prompt:str, user_message:str, task:str=None, responses:list=None) -> str:
+        
+        # responses가 None일 경우 빈 리스트로 초기화
+        responses = responses or []
+        
+        # 에이전트 메시지 구성
+        agent_msgs = []
+        for idx, resp in enumerate(responses):
+            agent_msgs.append({"role": "user", "content": f"Agent {idx+1} response: {resp}"})
+        # 최종 응답 생성
+        final_response = self.__call__(system_prompt, user_message, task=task, multi_agent_response=agent_msgs)
+        return final_response
+    
     
 
 class Multi_modal_agent(LLM_Agent):

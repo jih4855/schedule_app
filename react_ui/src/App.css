@@ -1,0 +1,169 @@
+/* OpenAI 스타일에 맞춘 미니멀 다크 테마 (레이아웃 유지, 톤만 재정의) */
+
+/* ------------------ Design Tokens ------------------ */
+:root {
+  --bg: #0d1117;
+  --bg-alt: #11161d;
+  --surface: #161b22;
+  --surface-alt: #1e242c;
+  --border: #30363d;
+  --border-light: #3d444d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent: #3b82f6; /* 블루 */
+  --accent-hover: #5da5ff;
+  --danger: #f85149;
+  --danger-hover: #ff6a61;
+  --warn: #e3b341;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow: 0 4px 12px rgba(0,0,0,0.4);
+  --transition: 130ms cubic-bezier(.4,.2,.2,1);
+  --focus-ring: 0 0 0 2px rgba(59,130,246,.5);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------ Layout ------------------ */
+.app { min-height: 100vh; display: flex; justify-content: center; padding: 40px 32px 80px; }
+.app-container { width: 100%; max-width: 1220px; display: flex; flex-direction: column; gap: 32px; }
+
+/* ------------------ Header ------------------ */
+.app-header { padding: 8px 0 4px; border-bottom: 1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
+.app-header h1 { font-size: 1.8rem; font-weight:600; letter-spacing:-0.5px; }
+.app-header p { color: var(--text-secondary); font-size: .95rem; }
+
+/* ------------------ Tabs ------------------ */
+.tab-container { display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
+.tab-button {
+  position: relative;
+  background: transparent;
+  border: 0;
+  color: var(--text-secondary);
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.tab-button:hover { color: var(--text-primary); background: var(--surface); }
+.tab-button.active { color: var(--text-primary); }
+.tab-button.active::after {
+  content:""; position:absolute; left:8px; right:8px; bottom:-1px; height:2px; background: var(--accent); border-radius:2px;
+}
+
+/* ------------------ Main ------------------ */
+.main-content { display:flex; flex-direction:column; gap:32px; }
+.mode-container { display:flex; flex-direction:column; gap:32px; }
+
+/* ------------------ Panels / Cards ------------------ */
+.input-section, .multi-agent-form, .response-card, .agent-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.input-section:hover, .multi-agent-form:hover, .agent-card:hover { border-color: var(--border-light); }
+
+/* Section titles */
+.section-title { display:flex; align-items:center; gap:8px; font-size:1rem; font-weight:600; color: var(--text-primary); margin-bottom:16px; }
+.section-icon { font-size:1.1rem; }
+
+/* ------------------ Form Groups ------------------ */
+.input-group { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+.input-group:last-child { margin-bottom:0; }
+.input-label { font-size:.75rem; text-transform:uppercase; letter-spacing: .06em; color: var(--text-secondary); font-weight:600; }
+
+input, textarea { width:100%; background: var(--surface-alt); border:1px solid var(--border); color: var(--text-primary); padding:12px 14px; font-size:.9rem; border-radius: var(--radius); font-family:inherit; resize: vertical; min-height:46px; transition: var(--transition); }
+textarea { line-height:1.45; }
+input:focus, textarea:focus { outline:none; border-color: var(--accent); box-shadow: var(--focus-ring); }
+input::placeholder, textarea::placeholder { color: var(--text-secondary); opacity:.6; }
+
+/* ------------------ Buttons ------------------ */
+.submit-button, .add-agent-button { position:relative; overflow:hidden; background: var(--accent); border:1px solid var(--accent); color:#fff; padding:12px 18px; font-size:.9rem; font-weight:600; border-radius: var(--radius); cursor:pointer; display:inline-flex; align-items:center; gap:8px; justify-content:center; transition: var(--transition); }
+.submit-button.large { padding:14px 22px; font-size: .95rem; }
+.submit-button:hover:not(:disabled), .add-agent-button:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.submit-button:disabled { opacity:.4; cursor:not-allowed; }
+
+.remove-agent-btn { width:30px; height:30px; background: var(--surface-alt); border:1px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-sm); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.8rem; transition: var(--transition); }
+.remove-agent-btn:hover { color:#fff; background: var(--danger); border-color: var(--danger); }
+.remove-icon { line-height:1; }
+
+.add-agent-section { margin-top:12px; }
+.add-agent-button { background: transparent; border:1px dashed var(--border-light); color: var(--text-secondary); font-weight:500; }
+.add-agent-button:hover { color: var(--text-primary); border-color: var(--accent); background: var(--surface-alt); }
+.add-icon { font-size:1rem; }
+
+/* ------------------ Loading Spinner ------------------ */
+.loading-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.25); border-top-color:#fff; border-radius:50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ------------------ Agents Grid ------------------ */
+.agents-grid { display:grid; gap:18px; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); }
+.agent-card { position:relative; display:flex; flex-direction:column; gap:14px; }
+.agent-header { display:flex; align-items:center; gap:10px; }
+.agent-number { width:26px; height:26px; background: var(--surface-alt); border:1px solid var(--border); color: var(--text-secondary); font-size:.7rem; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:600; }
+.agent-name-input { font-weight:600; }
+.agent-name-input:focus { border-color: var(--accent); }
+
+/* ------------------ Responses ------------------ */
+.response-section { display:flex; flex-direction:column; gap:28px; }
+.response-title { display:flex; align-items:center; gap:8px; font-size:.95rem; font-weight:600; color: var(--text-secondary); letter-spacing:.04em; text-transform:uppercase; }
+.multi-response { display:flex; flex-direction:column; gap:36px; }
+.individual-responses { display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
+
+.response-card { margin:0; padding:18px 18px 20px; background: var(--surface-alt); border:1px solid var(--border); box-shadow:none; position:relative; }
+.response-card.agent-response { border-left:3px solid var(--accent); }
+.response-card.final { border-left:3px solid var(--warn); }
+
+.response-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.response-icon, .agent-avatar { width:34px; height:34px; background: var(--surface); border:1px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-sm); font-size:1rem; display:flex; align-items:center; justify-content:center; }
+.response-header h3, .response-header h4 { font-size:.9rem; font-weight:600; margin:0; color: var(--text-primary); }
+.response-content { font-size:.85rem; color: var(--text-secondary); line-height:1.5; white-space:pre-wrap; }
+
+.final-response { display:flex; flex-direction:column; gap:16px; }
+
+/* ------------------ Error Message ------------------ */
+.error-message { background: #2a1313; border:1px solid #553; color:#ffb4b0; border-radius: var(--radius); padding:12px 14px; font-size:.8rem; display:flex; gap:8px; align-items:center; }
+.error-icon { font-size:1rem; }
+
+/* ------------------ Utilities ------------------ */
+.send-icon { font-size:1rem; }
+.label-icon { font-size:1rem; opacity:.7; }
+
+/* ------------------ Responsive ------------------ */
+@media (max-width: 840px) {
+  .app { padding: 28px 18px 60px; }
+  .app-header h1 { font-size: 1.55rem; }
+  .main-content { gap:24px; }
+  .agents-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .app { padding: 20px 14px 48px; }
+  .app-header { gap:6px; }
+  .tab-container { flex-wrap:wrap; }
+  .tab-button { flex:1 1 auto; }
+  input, textarea { font-size:.85rem; }
+  .submit-button.large { font-size:.85rem; }
+}
+
+/* ------------------ Subtle Scrollbar (WebKit) ------------------ */
+*::-webkit-scrollbar { width:10px; }
+*::-webkit-scrollbar-track { background: var(--bg); }
+*::-webkit-scrollbar-thumb { background: var(--surface-alt); border:2px solid var(--bg); border-radius:10px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--surface); }

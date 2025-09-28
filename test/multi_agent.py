@@ -140,7 +140,7 @@ dotenv.load_dotenv()
 multi_agent = LLM_Agent(model_name="gemini-2.5-flash", provider="genai", api_key=os.getenv("GENAI_API_KEY"))
 
 agent_responses = {
-    name: multi_agent.generate_response(multi_agent_system_prompts[name], user_prompts[name], multi_agent_tasks[name])
+    name: multi_agent.__call__(multi_agent_system_prompts[name], user_prompts[name], multi_agent_tasks[name])
     for name in order
 }
 response_list = [agent_responses[name] for name in order]
