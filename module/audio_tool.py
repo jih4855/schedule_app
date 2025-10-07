@@ -93,7 +93,15 @@ class Audio:
                 'preferredcodec': preferred_codec,
                 'preferredquality': preferred_quality,
             }],
-            'ignoreerrors': True
+            'ignoreerrors': True,
+            # YouTube 403 우회 옵션
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['ios', 'web'],
+                    'skip': ['hls', 'dash']
+                }
+            },
+            'cookiesfrombrowser': None,  # 브라우저 쿠키 사용 안 함
         }
         successful = []
         failed = []
@@ -112,5 +120,9 @@ class Audio:
                 failed.append(url)
 
         print(f"📊 결과: 성공 {len(successful)}개, 실패 {len(failed)}개")
-        return successful, failed
+        return {
+            "successful": successful,
+            "failed": failed,
+            "summary": f"성공: {len(successful)}개, 실패: {len(failed)}개"
+        }
 
