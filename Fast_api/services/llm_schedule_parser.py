@@ -15,6 +15,9 @@ load_dotenv()
 def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]:
     KST = ZoneInfo('Asia/Seoul')
     now = datetime.now(KST)
+    model = os.getenv("model_name")
+    provider = os.getenv("provider")
+    api_key = os.getenv("api_key")
 
     weekday_kr = ["월", "화", "수", "목", "금", "토", "일"][now.weekday()]
     tomorrow = (now + timedelta(days=1)).strftime("%Y-%m-%d")
@@ -50,7 +53,7 @@ def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]
 5. JSON 배열만 출력, 다른 텍스트 금지
 """
 
-    llm = LLM_Agent(model_name=os.getenv("model_name"), provider=os.getenv("provider"), api_key=os.getenv("api_key"))
+    llm = LLM_Agent(model_name=model, provider=provider, api_key=api_key)
     response = llm(system_prompt=system_prompt, user_message=user_message)
 
     cleaned = response.strip()
