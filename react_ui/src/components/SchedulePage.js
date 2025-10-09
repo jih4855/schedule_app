@@ -442,6 +442,12 @@ const SchedulePage = ({ onLogout }) => {
           <div className="input-tooltip">
             <div className="tooltip-header">💡 정확한 입력 팁 (베타)</div>
             <div className="tooltip-content">
+              <strong>📌 주요 기능:</strong>
+              <ul>
+                <li>자연어로 단일 또는 다중 일정 등록</li>
+                <li>날짜, 시간, 상대 표현 인식</li>
+                <li>설명 추가 가능</li>
+              </ul>
               <strong>📝 입력 예시:</strong>
               <ul>
                 <li>단일등록 : 10월 15일 오후 1시 회의</li>
@@ -454,10 +460,12 @@ const SchedulePage = ({ onLogout }) => {
                 <li>날짜: "10일", "15일", "10월 20일"</li>
                 <li>상대: "내일", "모레", "이번주 일요일"</li>
               </ul>
-              <strong>⚠️ 인식 어려운 표현:</strong>
+              <strong>⚠️ 인식 어려운 표현(추후 개선 예정):</strong>
               <ul>
-                <li>1주일 이후 날짜 (추후 개선 예정)</li>
-              </ul>
+                <li>1주일 이후 날짜 등록(예: 2주후 수요일 회의 등록)</li>
+                </ul>
+                <strong>주의사항:</strong>
+                <p>현재는 테스트 기간이므로, 개인정보 및 기밀 정보 입력은 권장하지 않습니다.</p>
             </div>
           </div>
         </div>
