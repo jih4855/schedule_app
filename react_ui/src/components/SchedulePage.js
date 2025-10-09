@@ -346,29 +346,43 @@ const SchedulePage = ({ onLogout }) => {
                     className={`schedule-card ${schedule.is_completed ? 'completed' : ''}`}
                   >
                     <div className="schedule-card-header">
+                      <input
+                        type="checkbox"
+                        className="schedule-checkbox"
+                        checked={schedule.is_completed}
+                        onChange={() => handleToggleComplete(schedule.id, schedule.is_completed)}
+                      />
                       <h4 className="schedule-title">{schedule.title}</h4>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(schedule.id)}
-                      >
-                        삭제
-                      </button>
+                      <div className="schedule-actions">
+                        <button
+                          className={`complete-button ${schedule.is_completed ? 'completed' : ''}`}
+                          onClick={() => handleToggleComplete(schedule.id, schedule.is_completed)}
+                        >
+                          {schedule.is_completed ? '완료' : '미완료'}
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDelete(schedule.id)}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
 
-                    {schedule.description && (
-                      <p className="schedule-description">{schedule.description}</p>
-                    )}
+                    <div className="schedule-info-list">
+                      <div className="schedule-info-item">
+                        <span className="schedule-icon">⏰</span>
+                        <span className="schedule-time">
+                          {formatDateTime(schedule.scheduled_at)}
+                        </span>
+                      </div>
 
-                    <div className="schedule-footer">
-                      <span className="schedule-time">
-                        {formatDateTime(schedule.scheduled_at)}
-                      </span>
-                      <button
-                        className={`complete-button ${schedule.is_completed ? 'completed' : ''}`}
-                        onClick={() => handleToggleComplete(schedule.id, schedule.is_completed)}
-                      >
-                        {schedule.is_completed ? '완료됨' : '미완료'}
-                      </button>
+                      {schedule.description && (
+                        <div className="schedule-info-item">
+                          <span className="schedule-icon">📝</span>
+                          <span className="schedule-description">{schedule.description}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -416,14 +430,37 @@ const SchedulePage = ({ onLogout }) => {
 
       {/* 하단: 자연어 입력창 */}
       <form className="schedule-input-form" onSubmit={handleSendMessage}>
-        <input
-          type="text"
-          className="schedule-input"
-          placeholder="예: 내일 오후 3시에 회의, 다음주 월요일 오전 9시 프로젝트 발표"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          disabled={isSending}
-        />
+        <div className="input-with-tooltip">
+          <input
+            type="text"
+            className="schedule-input"
+            placeholder="예: 10월 15일 오후 1시 회의, 내일 13시 치과"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            disabled={isSending}
+          />
+          <div className="input-tooltip">
+            <div className="tooltip-header">💡 정확한 입력 팁 (베타)</div>
+            <div className="tooltip-content">
+              <strong>📝 입력 예시:</strong>
+              <ul>
+                <li>단일등록 : 10월 15일 오후 1시 회의</li>
+                <li>다중등록  : 오늘 오후 3시 디자인 회의, 내일 오전 10시 클라이언트 미팅, 금요일 저녁 7시 저녁약속</li>
+                <li>설명추가 : 내일 13시 치과 예약, 16일 14시 팀 미팅 프로젝트 관련</li>
+              </ul>
+              <strong>✅ 잘 인식되는 표현:</strong>
+              <ul>
+                <li>시간: "오후 1시", "13시", "16시"</li>
+                <li>날짜: "10일", "15일", "10월 20일"</li>
+                <li>상대: "내일", "모레", "이번주 일요일"</li>
+              </ul>
+              <strong>⚠️ 인식 어려운 표현:</strong>
+              <ul>
+                <li>1주일 이후 날짜 (추후 개선 예정)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
         <button
           type="submit"
           className="send-button"

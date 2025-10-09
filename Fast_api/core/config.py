@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    model_name: str = ""
+    provider: str = ""
+    api_key: str = ""
 
     # Pydantic V2의 설정 방식:
     # model_config에 SettingsConfigDict를 사용하여 설정을 전달합니다.

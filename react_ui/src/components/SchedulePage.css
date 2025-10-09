@@ -260,15 +260,24 @@
 .schedule-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.schedule-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #6c63ff;
+  flex-shrink: 0;
 }
 
 .schedule-title {
   color: #e4e4e4;
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   flex: 1;
 }
 
@@ -277,29 +286,48 @@
   color: #a0a0b0;
 }
 
-.schedule-description {
-  color: #b0b0c0;
-  margin: 0 0 10px 0;
-  font-size: 13px;
+.schedule-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.schedule-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.schedule-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.schedule-icon {
+  font-size: 16px;
+  flex-shrink: 0;
   line-height: 1.5;
 }
 
-.schedule-card.completed .schedule-description {
-  color: #808090;
-}
-
-.schedule-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 8px;
-  border-top: 1px solid #4a4a6a;
-}
-
 .schedule-time {
+  color: #b0b0c0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.schedule-description {
   color: #9090a0;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.schedule-card.completed .schedule-time,
+.schedule-card.completed .schedule-description {
+  color: #707080;
 }
 
 .complete-button {
@@ -427,8 +455,13 @@
   z-index: 99;
 }
 
-.schedule-input {
+.input-with-tooltip {
   flex: 1;
+  position: relative;
+}
+
+.schedule-input {
+  width: 100%;
   background: #1e1e2e;
   border: 1px solid #4a4a6a;
   color: #e4e4e4;
@@ -451,6 +484,103 @@
 .schedule-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Tooltip 스타일 */
+.input-tooltip {
+  position: absolute;
+  bottom: calc(100% + 15px);
+  left: 0;
+  right: 0;
+  background: rgba(30, 30, 46, 0.98);
+  border: 1px solid #6c63ff;
+  border-radius: 10px;
+  padding: 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.input-with-tooltip:hover .input-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-5px);
+}
+
+.input-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: #6c63ff transparent transparent transparent;
+}
+
+.input-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 9px;
+  border-style: solid;
+  border-color: rgba(30, 30, 46, 0.98) transparent transparent transparent;
+  z-index: 1;
+}
+
+.tooltip-header {
+  background: rgba(108, 99, 255, 0.2);
+  color: #e4e4e4;
+  padding: 12px 16px;
+  border-radius: 10px 10px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #6c63ff;
+}
+
+.tooltip-content {
+  padding: 16px;
+  color: #b0b0c0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tooltip-content strong {
+  display: block;
+  color: #e4e4e4;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.tooltip-content strong:first-child {
+  margin-top: 0;
+}
+
+.tooltip-content ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.tooltip-content li {
+  color: #9090a0;
+  padding: 3px 0;
+  position: relative;
+}
+
+.tooltip-content li::before {
+  content: '•';
+  color: #6c63ff;
+  font-weight: bold;
+  position: absolute;
+  left: -15px;
 }
 
 .send-button {
@@ -513,6 +643,21 @@
     padding: 15px 20px;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .input-tooltip {
+    max-width: calc(100vw - 40px);
+    font-size: 12px;
+  }
+
+  .tooltip-header {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .tooltip-content {
+    padding: 14px;
+    font-size: 12px;
   }
 
   .send-button {

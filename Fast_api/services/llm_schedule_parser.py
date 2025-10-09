@@ -9,6 +9,8 @@ from zoneinfo import ZoneInfo
 from typing import List
 import json
 from dotenv import load_dotenv
+import asyncio
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 
 load_dotenv()
 
@@ -54,7 +56,14 @@ def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]
 """
 
     llm = LLM_Agent(model_name=model, provider=provider, api_key=api_key)
-    response = llm(system_prompt=system_prompt, user_message=user_message)
+
+    # 타임아웃 1분 적용
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(llm, system_prompt, user_message)
+        try:
+            response = future.result(timeout=60)
+        except FuturesTimeoutError:
+            raise TimeoutError("LLM 응답 시간이 1분을 초과했습니다.")
 
     cleaned = response.strip()
     if cleaned.startswith("```json"):
