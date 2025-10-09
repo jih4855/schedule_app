@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './SignupForm.css'; // 같은 스타일 사용
+import './LoginForm.css';
 
-const LoginForm = ({ onSwitchToSignup, onLoginSuccess }) => {
+const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -34,15 +34,16 @@ const LoginForm = ({ onSwitchToSignup, onLoginSuccess }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // JWT 토큰을 localStorage에 저장
         localStorage.setItem('access_token', data.access_token);
+        const expirationTime = Date.now() + (30 * 60 * 1000);
+        localStorage.setItem('token_expiration', expirationTime.toString());
+
         setMessage({
           text: `로그인 성공! ${formData.username}님 환영합니다!`,
           type: 'success'
         });
         setFormData({ username: '', password: '' });
 
-        // 짧은 지연 후 메인페이지로 이동
         setTimeout(() => {
           onLoginSuccess();
         }, 1000);
@@ -63,10 +64,10 @@ const LoginForm = ({ onSwitchToSignup, onLoginSuccess }) => {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-form">
+    <div className="login-container">
+      <div className="login-form">
         <h2>로그인</h2>
-        <p className="signup-description">
+        <p className="login-description">
           계정에 로그인하여 서비스를 이용해보세요
         </p>
 

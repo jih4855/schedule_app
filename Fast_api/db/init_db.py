@@ -1,6 +1,7 @@
 from db.session import engine
 from db.base_class import Base
 from models import user  # 이 임포트가 핵심!
+from models import schedule
 
 def init_db():
     print("Creating all tables...")

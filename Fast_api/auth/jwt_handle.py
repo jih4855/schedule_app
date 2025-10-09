@@ -1,8 +1,11 @@
 from jose import jwt, JWTError
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from core.config import settings
 from datetime import datetime
 import zoneinfo
+from db.session import get_db
+from sqlalchemy.orm import Session
 
 def verify_token(token: str):
     """
@@ -48,35 +51,34 @@ def verify_token(token: str):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-def extract_token_from_header(authorization: str):
+security = HTTPBearer()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+):
     """
-    Authorization 헤더에서 Bearer 토큰을 추출합니다.
-    
+    JWT 토큰을 검증하고 현재 사용자를 반환하는 의존성 함수.
+
     Args:
-        authorization (str): Authorization 헤더 문자열.
+        credentials: HTTPBearer로부터 추출된 인증 자격 증명
+        db: 데이터베이스 세션
 
     Returns:
-        str: 추출된 토큰 문자열.
+        User: 인증된 사용자 객체
     """
-    if not authorization.startswith("Bearer "):
+    from models.user import User
+
+    token = credentials.credentials
+    payload = verify_token(token)
+    username = payload.get("sub")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authorization header format",
+            detail="사용자를 찾을 수 없습니다.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
-    try:
-            scheme, token = authorization.split()
-            if scheme.lower() != "bearer":
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Bearer 토큰이 아닙니다",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            return token
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="잘못된 Authorization 헤더 형식입니다",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+
+    return user

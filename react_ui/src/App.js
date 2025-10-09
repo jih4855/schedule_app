@@ -1,53 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import SignupForm from './components/SignupForm';
 import LoginForm from './components/LoginForm';
-import MainPage from './components/MainPage';
+import SignupForm from './components/SignupForm';
+import SchedulePage from './components/SchedulePage';
 import './App.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   // 컴포넌트 마운트 시 토큰 확인
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    if (token) {
-      setIsLoggedIn(true);
-      setCurrentView('main');
+    const expiration = localStorage.getItem('token_expiration');
+
+    if (token && expiration) {
+      const now = Date.now();
+      if (now < parseInt(expiration)) {
+        setIsLoggedIn(true);
+      } else {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
+        setIsLoggedIn(false);
+      }
     }
   }, []);
 
-  const switchToSignup = () => setCurrentView('signup');
-  const switchToLogin = () => {
-    setCurrentView('login');
-    setIsLoggedIn(false);
-  };
-
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
-    setCurrentView('main');
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_expiration');
     setIsLoggedIn(false);
-    setCurrentView('login');
+  };
+
+  const handleSwitchToSignup = () => {
+    setShowSignup(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setShowSignup(false);
   };
 
   return (
     <div className="App">
       {!isLoggedIn ? (
-        <>
-          {currentView === 'login' ? (
-            <LoginForm
-              onSwitchToSignup={switchToSignup}
-              onLoginSuccess={handleLoginSuccess}
-            />
-          ) : (
-            <SignupForm onSwitchToLogin={switchToLogin} />
-          )}
-        </>
+        showSignup ? (
+          <SignupForm onSwitchToLogin={handleSwitchToLogin} />
+        ) : (
+          <LoginForm
+            onLoginSuccess={handleLoginSuccess}
+            onSwitchToSignup={handleSwitchToSignup}
+          />
+        )
       ) : (
-        <MainPage onLogout={handleLogout} />
+        <SchedulePage onLogout={handleLogout} />
       )}
     </div>
   );

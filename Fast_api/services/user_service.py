@@ -6,7 +6,7 @@ from schemas.user import UserCreate, UserSchema
 # bcrypt 대신 pbkdf2_sha256 사용 (Python 내장 라이브러리 기반으로 안정적)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-def get_user_by_email(db: Session, email: str):
+def get_user_by(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
 def create_user(db: Session, user: UserCreate):

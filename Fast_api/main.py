@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any, Optional
 import logging
-from api import signup, login
+from api import signup, login, schedule
+from auth.jwt_handle import get_current_user
+from models.user import User
 
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
@@ -18,11 +20,16 @@ app.add_middleware(
 )
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root(current_user: User = Depends(get_current_user)):
+    return {
+        "message": "Hello World",
+        "user": current_user.username,
+        "email": current_user.email
+    }
 
 app.include_router(signup.router, prefix="/api", tags=["signup"])
 app.include_router(login.router, prefix="/api", tags=["login"])
+app.include_router(schedule.router, prefix="/api", tags=["schedules"])
 
 if __name__ == "__main__":
     import uvicorn
