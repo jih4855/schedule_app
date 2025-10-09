@@ -306,9 +306,16 @@
 }
 
 .schedule-icon {
-  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c63ff;
   flex-shrink: 0;
-  line-height: 1.5;
+  line-height: 1;
+}
+
+.schedule-icon svg {
+  display: block;
 }
 
 .schedule-time {
