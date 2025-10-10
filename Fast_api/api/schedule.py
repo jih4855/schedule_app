@@ -7,8 +7,11 @@ from schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleResponse, N
 from services import schedule_service
 from services.llm_schedule_parser import parse_natural_language_to_schedules
 from typing import List
+import logging
+import json
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/schedules", response_model=ScheduleResponse)
 def create_schedule(
@@ -26,8 +29,18 @@ def parse_and_create_schedules(
 ):
     try:
         parsed_schedules = parse_natural_language_to_schedules(input_data.text)
+    except TimeoutError:
+        # 타임아웃 오류는 구체적으로 처리
+        logger.warning(f"LLM 파싱 타임아웃: user={current_user.username}")
+        raise HTTPException(status_code=408, detail="요청 처리 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.")
+    except json.JSONDecodeError as e:
+        # JSON 파싱 오류는 로그에만 상세 기록
+        logger.error(f"JSON 파싱 실패: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="일정 형식 변환 중 오류가 발생했습니다.")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"LLM 파싱 실패: {str(e)}")
+        # 기타 모든 오류는 일반 메시지로 처리, 서버 로그에만 상세 기록
+        logger.error(f"LLM 파싱 실패: user={current_user.username}, error={str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="일정 파싱 중 오류가 발생했습니다. 다시 시도해주세요.")
 
     created_schedules = []
     for schedule in parsed_schedules:

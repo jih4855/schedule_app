@@ -42,8 +42,10 @@ const SignupForm = ({ onSwitchToLogin }) => {
     setIsLoading(true);
     setMessage({ text: '', type: '' });
 
+    const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
     try {
-      const response = await fetch('http://localhost:8000/api/signup', {
+      const response = await fetch(`${API_URL}/api/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +129,10 @@ const SignupForm = ({ onSwitchToLogin }) => {
               value={formData.password}
               onChange={handleChange}
               required
-              placeholder="비밀번호를 입력하세요"
+              minLength="8"
+              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$"
+              title="비밀번호는 최소 8자 이상, 영문자와 숫자를 포함해야 합니다"
+              placeholder="비밀번호 (최소 8자, 영문+숫자)"
               disabled={isLoading}
             />
           </div>

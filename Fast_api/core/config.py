@@ -16,7 +16,8 @@ class Settings(BaseSettings):
     # model_config에 SettingsConfigDict를 사용하여 설정을 전달합니다.
     model_config = SettingsConfigDict(
         env_file="./.env",
-        env_file_encoding="utf-8"
+        env_file_encoding="utf-8",
+        extra="allow"  # .env 파일의 추가 필드 허용
     )
 
 # 다른 파일에서 쉽게 가져다 쓸 수 있도록 settings 객체를 생성합니다.

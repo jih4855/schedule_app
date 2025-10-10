@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './SchedulePage.css';
 
 const SchedulePage = ({ onLogout }) => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
   const [schedules, setSchedules] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -22,7 +24,7 @@ const SchedulePage = ({ onLogout }) => {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/api/schedules', {
+      const response = await fetch(`${API_URL}/api/schedules`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -32,6 +34,9 @@ const SchedulePage = ({ onLogout }) => {
 
       if (response.status === 401) {
         setError('인증이 만료되었습니다. 다시 로그인해주세요.');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
+        setTimeout(() => onLogout(), 2000);
         return;
       }
 
@@ -63,7 +68,7 @@ const SchedulePage = ({ onLogout }) => {
     try {
       const token = localStorage.getItem('access_token');
 
-      const response = await fetch('http://localhost:8000/api/schedules/parse-and-create', {
+      const response = await fetch(`${API_URL}/api/schedules/parse-and-create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -76,6 +81,9 @@ const SchedulePage = ({ onLogout }) => {
 
       if (response.status === 401) {
         setError('인증이 만료되었습니다. 다시 로그인해주세요.');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
+        setTimeout(() => onLogout(), 2000);
         return;
       }
 
@@ -97,7 +105,7 @@ const SchedulePage = ({ onLogout }) => {
     try {
       const token = localStorage.getItem('access_token');
 
-      const response = await fetch(`http://localhost:8000/api/schedules/${scheduleId}`, {
+      const response = await fetch(`${API_URL}/api/schedules/${scheduleId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -107,6 +115,14 @@ const SchedulePage = ({ onLogout }) => {
           is_completed: !currentStatus
         }),
       });
+
+      if (response.status === 401) {
+        setError('인증이 만료되었습니다. 다시 로그인해주세요.');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
+        setTimeout(() => onLogout(), 2000);
+        return;
+      }
 
       if (response.ok) {
         await fetchSchedules();
@@ -127,13 +143,21 @@ const SchedulePage = ({ onLogout }) => {
     try {
       const token = localStorage.getItem('access_token');
 
-      const response = await fetch(`http://localhost:8000/api/schedules/${scheduleId}`, {
+      const response = await fetch(`${API_URL}/api/schedules/${scheduleId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+
+      if (response.status === 401) {
+        setError('인증이 만료되었습니다. 다시 로그인해주세요.');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
+        setTimeout(() => onLogout(), 2000);
+        return;
+      }
 
       if (response.ok) {
         await fetchSchedules();

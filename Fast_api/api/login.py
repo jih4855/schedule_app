@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 import zoneinfo
 from core.config import settings
 from pydantic import BaseModel
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 
@@ -33,10 +36,21 @@ def login_for_access_token(login_request: LoginRequest, db=Depends(get_db)):
     """
     # 사용자 조회
     user = db.query(User).filter(User.username == login_request.username).first()
-    
+
+    # 타이밍 공격 방지: 항상 비밀번호 검증 수행
+    if user:
+        password_valid = user.verify_password(login_request.password)
+    else:
+        # 사용자가 없어도 더미 해시 검증으로 동일한 시간 소요
+        pwd_context.verify(
+            login_request.password,
+            "$pbkdf2-sha256$29000$N2bMWQtBaA0hRAihlBJiLA$1t8iyB2A.WF/Z5JZv.lfCIhXXN8SjSNLW3pn.ljxF6g"
+        )
+        password_valid = False
+
     # 사용자 정보 또는 비밀번호가 올바르지 않은 경우 예외 발생
-    if not user or not user.verify_password(login_request.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not password_valid:
+        raise HTTPException(status_code=401, detail="사용자명 또는 비밀번호를 확인하세요.")
 
     expire_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     expire_time = datetime.now(tz=zoneinfo.ZoneInfo("UTC")) + expire_delta
