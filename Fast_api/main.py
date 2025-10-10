@@ -1,3 +1,8 @@
+import sys
+import os
+# Add Fast_api directory to Python path for module imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
