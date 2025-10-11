@@ -11,15 +11,15 @@ import json
 from dotenv import load_dotenv
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+from Fast_api.core.config import settings
 
-load_dotenv()
 
 def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]:
     KST = ZoneInfo('Asia/Seoul')
     now = datetime.now(KST)
-    model = os.getenv("model_name")
-    provider = os.getenv("provider")
-    api_key = os.getenv("api_key")
+    model = settings.model_name
+    provider = settings.provider
+    api_key = settings.api_key
 
     weekday_kr = ["월", "화", "수", "목", "금", "토", "일"][now.weekday()]
     tomorrow = (now + timedelta(days=1)).strftime("%Y-%m-%d")
