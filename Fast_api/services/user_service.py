@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from models.user import User
-from schemas.user import UserCreate, UserSchema
+from Fast_api.models.user import User
+from Fast_api.schemas.user import UserCreate, UserSchema
 
 # bcrypt 대신 pbkdf2_sha256 사용 (Python 내장 라이브러리 기반으로 안정적)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")

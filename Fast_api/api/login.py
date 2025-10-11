@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from schemas.user import LoginRequest
-from db.session import get_db
+from Fast_api.schemas.user import LoginRequest
+from Fast_api.db.session import get_db
 from fastapi import Depends
 from jose import jwt
-from models.user import User
+from Fast_api.models.user import User
 from datetime import datetime, timedelta
 import zoneinfo
-from core.config import settings
+from Fast_api.core.config import settings
 from pydantic import BaseModel
 from passlib.context import CryptContext
 

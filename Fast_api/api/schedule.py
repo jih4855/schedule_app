@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.session import get_db
-from auth.jwt_handle import get_current_user
-from models.user import User
-from schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleResponse, NaturalLanguageInput
-from services import schedule_service
-from services.llm_schedule_parser import parse_natural_language_to_schedules
+from Fast_api.db.session import get_db
+from Fast_api.auth.jwt_handle import get_current_user
+from Fast_api.models.user import User
+from Fast_api.schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleResponse, NaturalLanguageInput
+from Fast_api.services import schedule_service
+from Fast_api.services.llm_schedule_parser import parse_natural_language_to_schedules
 from typing import List
 import logging
 import json

@@ -1,10 +1,10 @@
 from jose import jwt, JWTError
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from core.config import settings
+from Fast_api.core.config import settings
 from datetime import datetime
 import zoneinfo
-from db.session import get_db
+from Fast_api.db.session import get_db
 from sqlalchemy.orm import Session
 
 def verify_token(token: str):
@@ -67,7 +67,7 @@ def get_current_user(
     Returns:
         User: 인증된 사용자 객체
     """
-    from models.user import User
+    from Fast_api.models.user import User
 
     token = credentials.credentials
     payload = verify_token(token)

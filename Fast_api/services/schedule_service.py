@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models.schedule import Schedule
-from schemas.schedule import ScheduleCreate, ScheduleUpdate
+from Fast_api.models.schedule import Schedule
+from Fast_api.schemas.schedule import ScheduleCreate, ScheduleUpdate
 from typing import List, Optional
 
 def create_schedule(db: Session, schedule: ScheduleCreate, user_id: int) -> Schedule:

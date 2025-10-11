@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from module.llm_agent import LLM_Agent
-from schemas.schedule import ScheduleCreate
+from Fast_api.schemas.schedule import ScheduleCreate
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from typing import List
