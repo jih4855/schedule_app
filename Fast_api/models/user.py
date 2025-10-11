@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from db.base_class import Base
+from Fast_api.db.base_class import Base
 from sqlalchemy import DateTime
 from datetime import datetime
 from sqlalchemy import DateTime

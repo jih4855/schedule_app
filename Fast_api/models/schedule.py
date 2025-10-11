@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
-from db.base_class import Base
+from Fast_api.db.base_class import Base
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
