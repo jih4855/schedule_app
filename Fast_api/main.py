@@ -55,10 +55,23 @@ app.include_router(signup.router, prefix="/api", tags=["signup"])
 app.include_router(login.router, prefix="/api", tags=["login"])
 app.include_router(schedule.router, prefix="/api", tags=["schedules"])
 
-# React 정적 파일 서빙 (반드시 API 라우터 설정 후에 추가)
+# React 정적 파일 서빙
 # 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
-app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
+# API 라우트가 아닌 모든 요청을 React 앱으로 전달 (SPA 라우팅)
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    from fastapi.responses import FileResponse
+
+    # API 경로는 이미 위에서 처리됨
+    # 파일이 존재하면 해당 파일 반환
+    file_path = os.path.join(STATIC_DIR, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+
+    # 파일이 없으면 index.html 반환 (React Router용)
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 if __name__ == "__main__":
     import uvicorn
