@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
 import logging
 from api import signup, login, schedule
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 # CORS 설정 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React 앱 주소
+    allow_origins=["http://localhost:8000", "http://localhost:3000"],  # 통합 서버 및 개발 서버
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,6 +36,9 @@ async def root(current_user: User = Depends(get_current_user)):
 app.include_router(signup.router, prefix="/api", tags=["signup"])
 app.include_router(login.router, prefix="/api", tags=["login"])
 app.include_router(schedule.router, prefix="/api", tags=["schedules"])
+
+# React 정적 파일 서빙 (반드시 API 라우터 설정 후에 추가)
+app.mount("/", StaticFiles(directory="../react_ui/build", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
