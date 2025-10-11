@@ -49,7 +49,6 @@ ENV/
 *.bin
 *.safetensors
 model_cache/
-models/
 
 # Whisper 모델 캐시
 ~/.cache/whisper/
