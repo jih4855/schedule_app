@@ -7,13 +7,19 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # 데이터베이스 초기화 (API import 전에 먼저 실행)
-from Fast_api.db.session import engine
+from Fast_api.db.session import engine, SQLALCHEMY_DATABASE_URL
 from Fast_api.db.base_class import Base
 from Fast_api.models import user
 from Fast_api.models import schedule as schedule_model  # 이름 충돌 방지
 
+logging.info(f"Database URL: {SQLALCHEMY_DATABASE_URL}")
 Base.metadata.create_all(bind=engine)
 logging.info("Database tables initialized")
+
+# DB 파일 존재 확인
+import os
+db_path = SQLALCHEMY_DATABASE_URL.replace("sqlite:///", "")
+logging.info(f"Database file exists: {os.path.exists(db_path)}, path: {db_path}")
 
 # 이제 API 모듈 import (DB가 준비된 후)
 from fastapi import FastAPI, HTTPException, Depends
