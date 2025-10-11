@@ -63,6 +63,11 @@ app.include_router(signup.router, prefix="/api", tags=["signup"])
 app.include_router(login.router, prefix="/api", tags=["login"])
 app.include_router(schedule.router, prefix="/api", tags=["schedules"])
 
+# 헬스체크 엔드포인트
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 # React 정적 파일 서빙
 # 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
