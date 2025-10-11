@@ -3,12 +3,24 @@ import os
 # Add Fast_api directory to Python path for module imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
+# 데이터베이스 초기화 (API import 전에 먼저 실행)
+from Fast_api.db.session import engine
+from Fast_api.db.base_class import Base
+from Fast_api.models import user
+from Fast_api.models import schedule as schedule_model  # 이름 충돌 방지
+
+Base.metadata.create_all(bind=engine)
+logging.info("Database tables initialized")
+
+# 이제 API 모듈 import (DB가 준비된 후)
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
-import logging
 from Fast_api.api import signup, login, schedule
 from Fast_api.auth.jwt_handle import get_current_user
 from Fast_api.models.user import User
@@ -23,16 +35,6 @@ app = FastAPI(
     redoc_url="/redoc" if not IS_PRODUCTION else None,
     openapi_url="/openapi.json" if not IS_PRODUCTION else None
 )
-logging.basicConfig(level=logging.INFO)
-
-# 데이터베이스 초기화 (테이블 자동 생성)
-from Fast_api.db.session import engine
-from Fast_api.db.base_class import Base
-from Fast_api.models import user
-from Fast_api.models import schedule as schedule_model  # 이름 충돌 방지
-
-Base.metadata.create_all(bind=engine)
-logging.info("Database tables initialized")
 
 # CORS 설정 추가
 app.add_middleware(
