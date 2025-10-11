@@ -13,7 +13,16 @@ from Fast_api.api import signup, login, schedule
 from Fast_api.auth.jwt_handle import get_current_user
 from Fast_api.models.user import User
 
-app = FastAPI()
+# 환경 변수로 개발/프로덕션 모드 구분
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+IS_PRODUCTION = ENVIRONMENT == "production"
+
+# 프로덕션에서는 문서 비활성화
+app = FastAPI(
+    docs_url="/docs" if not IS_PRODUCTION else None,
+    redoc_url="/redoc" if not IS_PRODUCTION else None,
+    openapi_url="/openapi.json" if not IS_PRODUCTION else None
+)
 logging.basicConfig(level=logging.INFO)
 
 # 데이터베이스 초기화 (테이블 자동 생성)
