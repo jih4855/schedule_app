@@ -22,7 +22,7 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
     setIsLoading(true);
     setMessage({ text: '', type: '' });
 
-    const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+    const API_URL = process.env.REACT_APP_API_BASE_URL || '';
 
     try {
       const response = await fetch(`${API_URL}/api/login`, {

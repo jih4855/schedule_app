@@ -19,19 +19,19 @@ logging.basicConfig(level=logging.INFO)
 # CORS 설정 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://localhost:3000"],  # 통합 서버 및 개발 서버
+    allow_origins=["http://localhost:8000", "http://localhost:3000", os.getenv("PRODUCTION_URL", "")],  # 통합 서버 및 개발 서버
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
-@app.get("/")
-async def root(current_user: User = Depends(get_current_user)):
-    return {
-        "message": "Hello World",
-        "user": current_user.username,
-        "email": current_user.email
-    }
+# @app.get("/")
+# async def root(current_user: User = Depends(get_current_user)):
+#     return {
+#         "message": "Hello World",
+#         "user": current_user.username,
+#         "email": current_user.email
+#     }
 
 app.include_router(signup.router, prefix="/api", tags=["signup"])
 app.include_router(login.router, prefix="/api", tags=["login"])

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './SchedulePage.css';
 
 const SchedulePage = ({ onLogout }) => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '';
 
   const [schedules, setSchedules] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
