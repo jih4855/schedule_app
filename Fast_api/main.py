@@ -35,11 +35,11 @@ from Fast_api.models.user import User
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 IS_PRODUCTION = ENVIRONMENT == "production"
 
-# 프로덕션에서는 문서 비활성화
+# 프로덕션에서는 문서 비활성화 (기본값: 비활성화)
 app = FastAPI(
-    docs_url="/docs" if not IS_PRODUCTION else None,
-    redoc_url="/redoc" if not IS_PRODUCTION else None,
-    openapi_url="/openapi.json" if not IS_PRODUCTION else None
+    docs_url=None,  # 개발 시에만 주석 해제
+    redoc_url=None,
+    openapi_url=None
 )
 
 # CORS 설정 추가
