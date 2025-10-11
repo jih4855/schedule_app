@@ -16,6 +16,14 @@ from Fast_api.models.user import User
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 
+# 데이터베이스 초기화 (테이블 자동 생성)
+from Fast_api.db.session import engine
+from Fast_api.db.base_class import Base
+from Fast_api.models import user, schedule  # 모델 import 필수
+
+Base.metadata.create_all(bind=engine)
+logging.info("Database tables initialized")
+
 # CORS 설정 추가
 app.add_middleware(
     CORSMiddleware,
