@@ -37,7 +37,7 @@ IS_PRODUCTION = ENVIRONMENT == "production"
 
 # 프로덕션에서는 문서 비활성화 (기본값: 비활성화)
 app = FastAPI(
-    docs_url=None,  # 개발 시에만 주석 해제
+    docs_url=None, 
     redoc_url=None,
     openapi_url=None
 )
