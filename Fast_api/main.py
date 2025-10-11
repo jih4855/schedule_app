@@ -28,7 +28,8 @@ logging.basicConfig(level=logging.INFO)
 # 데이터베이스 초기화 (테이블 자동 생성)
 from Fast_api.db.session import engine
 from Fast_api.db.base_class import Base
-from Fast_api.models import user, schedule  # 모델 import 필수
+from Fast_api.models import user
+from Fast_api.models import schedule as schedule_model  # 이름 충돌 방지
 
 Base.metadata.create_all(bind=engine)
 logging.info("Database tables initialized")
