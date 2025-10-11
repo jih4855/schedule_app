@@ -9,9 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
 import logging
-from api import signup, login, schedule
-from auth.jwt_handle import get_current_user
-from models.user import User
+from Fast_api.api import signup, login, schedule
+from Fast_api.auth.jwt_handle import get_current_user
+from Fast_api.models.user import User
 
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
