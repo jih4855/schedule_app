@@ -38,7 +38,9 @@ app.include_router(login.router, prefix="/api", tags=["login"])
 app.include_router(schedule.router, prefix="/api", tags=["schedules"])
 
 # React 정적 파일 서빙 (반드시 API 라우터 설정 후에 추가)
-app.mount("/", StaticFiles(directory="../react_ui/build", html=True), name="static")
+# 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
+STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
