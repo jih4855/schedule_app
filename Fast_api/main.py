@@ -130,12 +130,15 @@ async def health_check():
 # 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
 
+# static 폴더를 명시적으로 마운트
+app.mount("/static", StaticFiles(directory=os.path.join(STATIC_DIR, "static")), name="static")
+
 # API 라우트가 아닌 모든 요청을 React 앱으로 전달 (SPA 라우팅)
 @app.get("/{full_path:path}")
 async def serve_react_app(full_path: str):
     from fastapi.responses import FileResponse
 
-    # API 경로는 이미 위에서 처리됨
+    # API 경로와 static 경로는 이미 위에서 처리됨
     # 파일이 존재하면 해당 파일 반환
     file_path = os.path.join(STATIC_DIR, full_path)
     if os.path.isfile(file_path):
