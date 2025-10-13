@@ -129,9 +129,18 @@ async def health_check():
 # React 정적 파일 서빙
 # 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
+logging.info(f"STATIC_DIR: {STATIC_DIR}")
+logging.info(f"STATIC_DIR exists: {os.path.exists(STATIC_DIR)}")
 
-# static 폴더를 명시적으로 마운트
-app.mount("/static", StaticFiles(directory=os.path.join(STATIC_DIR, "static")), name="static")
+static_files_dir = os.path.join(STATIC_DIR, "static")
+logging.info(f"Static files directory: {static_files_dir}")
+logging.info(f"Static files directory exists: {os.path.exists(static_files_dir)}")
+
+if os.path.exists(static_files_dir):
+    app.mount("/static", StaticFiles(directory=static_files_dir), name="static")
+    logging.info("Static files mounted successfully")
+else:
+    logging.error(f"Static files directory not found: {static_files_dir}")
 
 # API 라우트가 아닌 모든 요청을 React 앱으로 전달 (SPA 라우팅)
 @app.get("/{full_path:path}")
