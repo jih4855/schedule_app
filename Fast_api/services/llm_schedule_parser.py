@@ -10,11 +10,10 @@ from typing import List
 import json
 from dotenv import load_dotenv
 import asyncio
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from Fast_api.core.config import settings
 
 
-def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]:
+async def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]:
     KST = ZoneInfo('Asia/Seoul')
     now = datetime.now(KST)
     model = settings.model_name
@@ -57,13 +56,15 @@ def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleCreate]
 
     llm = LLM_Agent(model_name=model, provider=provider, api_key=api_key)
 
-    # 타임아웃 1분 적용
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(llm, system_prompt, user_message)
-        try:
-            response = future.result(timeout=60)
-        except FuturesTimeoutError:
-            raise TimeoutError("LLM 응답 시간이 1분을 초과했습니다.")
+    # asyncio.wait_for로 타임아웃 적용
+    loop = asyncio.get_event_loop()
+    try:
+        response = await asyncio.wait_for(
+            loop.run_in_executor(None, llm, system_prompt, user_message),
+            timeout=60.0
+        )
+    except asyncio.TimeoutError:
+        raise TimeoutError("LLM 응답 시간이 1분을 초과했습니다.")
 
     cleaned = response.strip()
     if cleaned.startswith("```json"):

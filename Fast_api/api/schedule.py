@@ -33,7 +33,7 @@ async def parse_and_create_schedules(
     current_user: User = Depends(get_current_user)
 ):
     try:
-        parsed_schedules = parse_natural_language_to_schedules(input_data.text)
+        parsed_schedules = await parse_natural_language_to_schedules(input_data.text)
     except TimeoutError:
         # 타임아웃 오류는 구체적으로 처리
         logger.warning(f"LLM 파싱 타임아웃: user={current_user.username}")
