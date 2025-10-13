@@ -117,16 +117,7 @@ app.add_middleware(
 #         "email": current_user.email
 #     }
 
-app.include_router(signup.router, prefix="/api", tags=["signup"])
-app.include_router(login.router, prefix="/api", tags=["login"])
-app.include_router(schedule.router, prefix="/api", tags=["schedules"])
-
-# 헬스체크 엔드포인트
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
-
-# React 정적 파일 서빙
+# React 정적 파일 서빙 (최우선!)
 # 현재 파일 기준 상위 디렉토리의 react_ui/build 경로를 절대 경로로 계산
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "react_ui", "build")
 logging.info(f"STATIC_DIR: {STATIC_DIR}")
@@ -142,7 +133,17 @@ if os.path.exists(static_files_dir):
 else:
     logging.error(f"Static files directory not found: {static_files_dir}")
 
-# API 라우트가 아닌 모든 요청을 React 앱으로 전달 (SPA 라우팅)
+# API 라우터 등록
+app.include_router(signup.router, prefix="/api", tags=["signup"])
+app.include_router(login.router, prefix="/api", tags=["login"])
+app.include_router(schedule.router, prefix="/api", tags=["schedules"])
+
+# 헬스체크 엔드포인트
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+# API 라우트가 아닌 모든 요청을 React 앱으로 전달 (SPA 라우팅) - 가장 마지막!
 @app.get("/{full_path:path}")
 async def serve_react_app(full_path: str):
     from fastapi.responses import FileResponse
