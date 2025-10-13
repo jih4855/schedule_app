@@ -18,6 +18,7 @@ sqlalchemy>=2.0.36
 # 인증 및 보안
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+slowapi>=0.1.9
 
 # 설정 및 환경변수 관리
 python-dotenv>=1.1.1

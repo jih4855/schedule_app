@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from Fast_api.db.session import get_db
 from Fast_api.auth.jwt_handle import get_current_user
@@ -9,9 +9,12 @@ from Fast_api.services.llm_schedule_parser import parse_natural_language_to_sche
 from typing import List
 import logging
 import json
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/schedules", response_model=ScheduleResponse)
 def create_schedule(
@@ -22,13 +25,15 @@ def create_schedule(
     return schedule_service.create_schedule(db, schedule, current_user.id)
 
 @router.post("/schedules/parse-and-create", response_model=List[ScheduleResponse])
-def parse_and_create_schedules(
+@limiter.limit("20/minute;100/hour;300/day")
+async def parse_and_create_schedules(
+    request: Request,
     input_data: NaturalLanguageInput,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     try:
-        parsed_schedules = parse_natural_language_to_schedules(input_data.text)
+        parsed_schedules = await parse_natural_language_to_schedules(input_data.text)
     except TimeoutError:
         # 타임아웃 오류는 구체적으로 처리
         logger.warning(f"LLM 파싱 타임아웃: user={current_user.username}")

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # Pydantic V2의 설정 방식:
     # model_config에 SettingsConfigDict를 사용하여 설정을 전달합니다.
     model_config = SettingsConfigDict(
-        env_file="./.env",
+        env_file="Fast_api/.env",
         env_file_encoding="utf-8",
         extra="allow"  # .env 파일의 추가 필드 허용
     )

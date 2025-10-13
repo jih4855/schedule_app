@@ -90,6 +90,10 @@ const SchedulePage = ({ onLogout }) => {
       if (response.ok) {
         setInputText('');
         await fetchSchedules();
+      } else if (response.status === 429) {
+        const errorData = await response.json();
+        const retryAfter = errorData.retry_after_seconds || 60;
+        setError(`${errorData.message || '요청 제한 초과'} (${retryAfter}초 후 재시도)`);
       } else {
         const errorData = await response.json();
         setError(errorData.detail || '일정 생성에 실패했습니다.');
@@ -338,19 +342,43 @@ const SchedulePage = ({ onLogout }) => {
               ))}
             </div>
             <div className="calendar-days">
-              {calendarDays.map((day, index) => (
-                <div
-                  key={index}
-                  className={`calendar-day ${day ? '' : 'empty'} ${
-                    day && isSameDay(day, selectedDate) ? 'selected' : ''
-                  } ${day && isSameDay(day, new Date()) ? 'today' : ''} ${
-                    day && hasSchedulesOnDate(day) ? 'has-schedule' : ''
-                  }`}
-                  onClick={() => day && setSelectedDate(day)}
-                >
-                  {day ? day.getDate() : ''}
-                </div>
-              ))}
+              {calendarDays.map((day, index) => {
+                const daySchedules = day ? getSchedulesForDate(day) : [];
+                const displayLimit = 2;
+                const remainingCount = daySchedules.length - displayLimit;
+
+                return (
+                  <div
+                    key={index}
+                    className={`calendar-day ${day ? '' : 'empty'} ${
+                      day && isSameDay(day, selectedDate) ? 'selected' : ''
+                    } ${day && isSameDay(day, new Date()) ? 'today' : ''} ${
+                      day && hasSchedulesOnDate(day) ? 'has-schedule' : ''
+                    }`}
+                    onClick={() => day && setSelectedDate(day)}
+                  >
+                    <span className="calendar-day-number">{day ? day.getDate() : ''}</span>
+                    {day && daySchedules.length > 0 && (
+                      <div className="calendar-day-schedules">
+                        {daySchedules.slice(0, displayLimit).map((schedule, idx) => (
+                          <div
+                            key={idx}
+                            className={`calendar-schedule-item ${schedule.is_completed ? 'completed' : ''}`}
+                            title={schedule.title}
+                          >
+                            {schedule.title}
+                          </div>
+                        ))}
+                        {remainingCount > 0 && (
+                          <div className="calendar-schedule-more">
+                            외 {remainingCount}개
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

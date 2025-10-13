@@ -11,7 +11,7 @@ function App() {
   // 컴포넌트 마운트 시 토큰 확인
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    const expiration = localStorage.getItem('token_expiration');
+    const expiration = localStorage.getItem('token_expiration'); 
 
     if (token && expiration) {
       const now = Date.now();

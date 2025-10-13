@@ -121,9 +121,9 @@
 }
 
 .calendar-weekday {
-  color: #9090a0;
+  color: #b0b0c0;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   padding: 10px 5px;
 }
@@ -145,9 +145,11 @@
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(30, 30, 46, 0.5);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 8px;
+  background: rgba(20, 20, 36, 0.7);
   border: 1px solid #4a4a6a;
   border-radius: 8px;
   color: #e4e4e4;
@@ -155,6 +157,7 @@
   transition: all 0.3s ease;
   font-size: 14px;
   position: relative;
+  overflow: hidden;
 }
 
 .calendar-day:hover:not(.empty) {
@@ -182,18 +185,56 @@
   font-weight: bold;
 }
 
-.calendar-day.has-schedule::after {
-  content: '';
-  position: absolute;
-  bottom: 5px;
-  width: 6px;
-  height: 6px;
-  background: #4caf50;
-  border-radius: 50%;
+/* 달력 날짜 숫자 */
+.calendar-day-number {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 4px;
+  align-self: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  text-align: center;
 }
 
-.calendar-day.selected.has-schedule::after {
-  background: #ffd700;
+/* 달력 날짜 칸의 일정 목록 */
+.calendar-day-schedules {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+/* 달력 날짜 칸의 개별 일정 제목 */
+.calendar-schedule-item {
+  font-size: 12px;
+  padding: 2px 4px;
+  font-weight: 500;
+  background: rgba(108, 99, 255, 0.5);
+  border-radius: 3px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.3;
+}
+
+.calendar-schedule-item.completed {
+  background: rgba(128, 128, 128, 0.3);
+  color: #a0a0b0;
+  text-decoration: line-through;
+}
+
+/* "외 N개" 표시 */
+.calendar-schedule-more {
+  font-size: 11px;
+  padding: 1px 4px;
+  color: #c0c0d0;
+  font-weight: 500;
+  font-style: italic;
+  text-align: center;
 }
 
 /* 우측: 상세 및 요약 섹션 (60%) */

@@ -49,6 +49,12 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
         setTimeout(() => {
           onLoginSuccess();
         }, 1000);
+      } else if (response.status === 429) {
+        const retryAfter = data.retry_after_seconds || 60;
+        setMessage({
+          text: `${data.message || '요청 제한 초과'} (${retryAfter}초 후 재시도)`,
+          type: 'error'
+        });
       } else {
         setMessage({
           text: data.detail || '로그인 중 오류가 발생했습니다.',

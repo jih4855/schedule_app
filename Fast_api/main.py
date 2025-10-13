@@ -22,7 +22,8 @@ db_path = SQLALCHEMY_DATABASE_URL.replace("sqlite:///", "")
 logging.info(f"Database file exists: {os.path.exists(db_path)}, path: {db_path}")
 
 # 이제 API 모듈 import (DB가 준비된 후)
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -30,17 +31,74 @@ from typing import List, Dict, Any, Optional
 from Fast_api.api import signup, login, schedule
 from Fast_api.auth.jwt_handle import get_current_user
 from Fast_api.models.user import User
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # 환경 변수로 개발/프로덕션 모드 구분
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 IS_PRODUCTION = ENVIRONMENT == "production"
 
+# SlowAPI Rate Limiter 초기화
+limiter = Limiter(key_func=get_remote_address)
+
+# Rate Limit 커스텀 에러 핸들러
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    """
+    Rate Limit 초과 시 단계별로 다른 메시지를 반환합니다.
+
+    Args:
+        request: FastAPI Request 객체
+        exc: RateLimitExceeded 예외
+
+    Returns:
+        JSONResponse: 429 상태 코드와 함께 에러 메시지
+    """
+    # Rate Limit 정보 파싱
+    detail_str = str(exc.detail) if hasattr(exc, 'detail') else ""
+
+    # 기본값
+    retry_after = 60
+    message = "너무 많은 요청을 보냈습니다. 잠시 후 다시 시도해주세요."
+    detail = "요청 제한을 초과했습니다."
+
+    # 단계별 메시지 설정
+    if "minute" in detail_str.lower() or "/minute" in detail_str:
+        retry_after = 60
+        message = "1분 이내에 너무 많은 요청을 보냈습니다. 1분 후 다시 시도해주세요."
+        detail = "분당 요청 제한을 초과했습니다."
+    elif "hour" in detail_str.lower() or "/hour" in detail_str:
+        retry_after = 3600
+        message = "1시간 이내에 너무 많은 요청을 보냈습니다. 1시간 후 다시 시도해주세요."
+        detail = "시간당 요청 제한을 초과했습니다."
+    elif "day" in detail_str.lower() or "/day" in detail_str:
+        retry_after = 86400
+        message = "오늘 요청 가능 횟수를 모두 사용했습니다. 내일 다시 시도해주세요."
+        detail = "일일 요청 제한을 초과했습니다."
+
+    return JSONResponse(
+        status_code=429,
+        headers={
+            "Retry-After": str(retry_after)
+        },
+        content={
+            "error": "요청 제한 초과",
+            "message": message,
+            "detail": detail,
+            "retry_after_seconds": retry_after
+        }
+    )
+
 # 프로덕션에서는 문서 비활성화 (기본값: 비활성화)
 app = FastAPI(
-    docs_url=None, 
+    docs_url=None,
     redoc_url=None,
     openapi_url=None
 )
+
+# SlowAPI 설정 추가
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 # CORS 설정 추가
 app.add_middleware(
