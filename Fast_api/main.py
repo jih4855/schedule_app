@@ -153,9 +153,15 @@ async def health_check():
 async def serve_react_app(full_path: str):
     from fastapi.responses import FileResponse
 
-    # API 경로와 static 경로는 이미 위에서 처리됨
+    # 경로 정규화 및 보안 검증 (Path Traversal 방지)
+    file_path = os.path.normpath(os.path.join(STATIC_DIR, full_path))
+    static_dir_real = os.path.realpath(STATIC_DIR)
+
+    # 요청된 파일이 STATIC_DIR 외부에 있으면 거부
+    if not file_path.startswith(static_dir_real):
+        raise HTTPException(status_code=403, detail="Access denied")
+
     # 파일이 존재하면 해당 파일 반환
-    file_path = os.path.join(STATIC_DIR, full_path)
     if os.path.isfile(file_path):
         return FileResponse(file_path)
 
