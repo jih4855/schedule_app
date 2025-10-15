@@ -30,16 +30,13 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',  // 추가: 쿠키 전송/수신 활성화
         body: JSON.stringify(formData)
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('access_token', data.access_token);
-        const expirationTime = Date.now() + (30 * 60 * 1000);
-        localStorage.setItem('token_expiration', expirationTime.toString());
-
         setMessage({
           text: `로그인 성공! ${formData.username}님 환영합니다!`,
           type: 'success'
@@ -47,7 +44,7 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
         setFormData({ username: '', password: '' });
 
         setTimeout(() => {
-          onLoginSuccess();
+          onLoginSuccess(data.access_token);  // Access Token 전달
         }, 1000);
       } else if (response.status === 429) {
         const retryAfter = data.retry_after_seconds || 60;

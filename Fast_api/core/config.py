@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # Refresh Token 만료 기간 (기본값 7일)
+    ENVIRONMENT: str = "development"  # 환경 설정 (development/production)
     model_name: str = ""
     provider: str = ""
     api_key: str = ""

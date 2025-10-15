@@ -82,3 +82,118 @@ def get_current_user(
         )
 
     return user
+
+
+def create_access_token(username: str) -> str:
+    """
+    Access Token을 생성합니다.
+
+    Args:
+        username (str): 사용자 이름
+
+    Returns:
+        str: 생성된 Access Token
+    """
+    from datetime import timedelta
+
+    expire_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire_time = datetime.now(tz=zoneinfo.ZoneInfo("UTC")) + expire_delta
+
+    access_token = jwt.encode(
+        {
+            "sub": username,
+            "exp": int(expire_time.timestamp())
+        },
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
+    )
+
+    return access_token
+
+
+def create_refresh_token(username: str) -> str:
+    """
+    Refresh Token을 생성합니다.
+
+    Args:
+        username (str): 사용자 이름
+
+    Returns:
+        str: 생성된 Refresh Token
+    """
+    from datetime import timedelta
+
+    expire_delta = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expire_time = datetime.now(tz=zoneinfo.ZoneInfo("UTC")) + expire_delta
+
+    refresh_token = jwt.encode(
+        {
+            "sub": username,
+            "exp": int(expire_time.timestamp()),
+            "type": "refresh"  # Token 타입 구분
+        },
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
+    )
+
+    return refresh_token
+
+
+def verify_refresh_token(token: str) -> str:
+    """
+    Refresh Token을 검증하고 사용자 이름을 반환합니다.
+
+    Args:
+        token (str): 검증할 Refresh Token
+
+    Returns:
+        str: 사용자 이름
+
+    Raises:
+        HTTPException: 토큰이 유효하지 않거나 만료된 경우
+    """
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        username: str = payload.get("sub")
+        token_type: str = payload.get("type")
+
+        # Refresh Token인지 확인
+        if token_type != "refresh":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token type",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        if username is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token: missing subject",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # 만료 시간 검증
+        exp_time = payload.get("exp")
+        if exp_time is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="토큰 만료 시간이 없습니다.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        current_time = datetime.now(tz=zoneinfo.ZoneInfo("UTC"))
+        if datetime.fromtimestamp(exp_time, tz=zoneinfo.ZoneInfo("UTC")) < current_time:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token이 만료되었습니다.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        return username
+
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="유효하지 않은 Refresh token입니다.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
