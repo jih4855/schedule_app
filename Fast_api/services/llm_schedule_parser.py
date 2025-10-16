@@ -60,7 +60,10 @@ def validate_schedule_input(user_input: str) -> None:
     # 2. 위험한 패턴 검사
     for pattern in DANGEROUS_PATTERNS:
         if re.search(pattern, user_input, re.IGNORECASE):
-            logger.warning(f"Dangerous pattern detected: {pattern}, input: {user_input[:50]}")
+            try:
+                logger.warning(f"Dangerous pattern detected: {pattern}, input: {user_input[:50]}")
+            except Exception:
+                pass  # 로깅 실패해도 검증은 계속 진행
             raise HTTPException(
                 status_code=400,
                 detail="유효하지 않은 입력입니다. 일정 정보만 입력해주세요."
