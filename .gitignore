@@ -15,8 +15,9 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+**/build/
 !react_ui/build/
+!react_ui/build/**
 develop-eggs/
 dist/
 downloads/
