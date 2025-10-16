@@ -34,6 +34,9 @@ async def parse_and_create_schedules(
 ):
     try:
         parsed_schedules = await parse_natural_language_to_schedules(input_data.text)
+    except HTTPException as he:
+        # 이미 HTTPException으로 처리된 오류는 그대로 전달
+        raise he
     except TimeoutError:
         # 타임아웃 오류는 구체적으로 처리
         logger.warning(f"LLM 파싱 타임아웃: user={current_user.username}")

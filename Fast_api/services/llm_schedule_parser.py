@@ -147,7 +147,7 @@ async def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleC
 
     # 타입 검증
     if not isinstance(schedules_data, list):
-        raise HTTPException(status_code=500, detail="잘못된 형식")
+        raise HTTPException(status_code=422, detail="잘못된 형식")
 
     # 개수 제한
     if len(schedules_data) > 10:
@@ -157,11 +157,11 @@ async def parse_natural_language_to_schedules(user_input: str) -> List[ScheduleC
     for data in schedules_data:
         # 필수 필드 확인
         if not all(k in data for k in ["title", "scheduled_at"]):
-            raise HTTPException(status_code=500, detail="필수 정보 누락")
+            raise HTTPException(status_code=422, detail="필수 정보 누락")
 
         # 타입 확인
         if not isinstance(data["title"], str):
-            raise HTTPException(status_code=500, detail="잘못된 제목 형식")
+            raise HTTPException(status_code=422, detail="잘못된 제목 형식")
 
     # 안전한 객체 생성 (길이 제한 적용)
     schedules = []
