@@ -154,18 +154,39 @@ async def serve_react_app(full_path: str):
     from fastapi.responses import FileResponse
 
     # 경로 정규화 및 보안 검증 (Path Traversal 방지)
-    file_path = os.path.normpath(os.path.join(STATIC_DIR, full_path))
-    static_dir_real = os.path.realpath(STATIC_DIR)
-
-    # 요청된 파일이 STATIC_DIR 외부에 있으면 거부
-    if not file_path.startswith(static_dir_real):
+    # 1. 위험한 패턴 사전 차단
+    if ".." in full_path or full_path.startswith("/"):
         raise HTTPException(status_code=403, detail="Access denied")
 
+    # 2. 경로 결합
+    file_path = os.path.join(STATIC_DIR, full_path)
+
+    # 3. 실제 경로로 변환 (심볼릭 링크 해결)
+    try:
+        file_path_real = os.path.realpath(file_path)
+        static_dir_real = os.path.realpath(STATIC_DIR)
+    except Exception:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # 4. 요청된 파일이 STATIC_DIR 외부에 있으면 거부
+    if not file_path_real.startswith(static_dir_real + os.sep):
+        # STATIC_DIR 자체도 허용
+        if file_path_real != static_dir_real:
+            raise HTTPException(status_code=403, detail="Access denied")
+
     # 파일이 존재하면 해당 파일 반환
-    if os.path.isfile(file_path):
-        return FileResponse(file_path)
+    if os.path.isfile(file_path_real):
+        return FileResponse(file_path_real)
 
     # 파일이 없으면 index.html 반환 (React Router용)
+    # 단, 의심스러운 경로는 404 반환 (보안)
+    suspicious_paths = ["etc", "var", "usr", "bin", "sys", "proc", "dev", "root", "home"]
+    path_parts = full_path.lower().split("/")
+
+    # 파일 확장자가 있거나 의심스러운 경로 포함 시 404
+    if "." in os.path.basename(full_path) or any(part in suspicious_paths for part in path_parts):
+        raise HTTPException(status_code=404, detail="File not found")
+
     return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 if __name__ == "__main__":
