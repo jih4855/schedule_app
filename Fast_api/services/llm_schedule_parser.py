@@ -17,28 +17,29 @@ from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 
-# 위험한 패턴 정의
-DANGEROUS_PATTERNS = [
-    r"system\s*(prompt|instruction|role)",
-    r"ignore\s*(previous|above|all|instruction)",
-    r"forget\s*(everything|all|previous)",
-    r"disregard\s*(previous|above|all)",
-    r"you\s*are\s*now",
-    r"act\s*as",
-    r"pretend\s*to\s*be",
-    r"new\s*instruction",
-    r"output\s*only",
-    r"return\s*only",
-    r"delete\s*(all|everything)",
-    r"drop\s*table",
-    r"<script",
-    r"javascript:",
-    r"잊어버려",
-    r"새로운\s*지시",
-    r"삭제\s*해줘",
-    r"테이블\s*삭제",
-    r"자바스크립트"
-]
+# # 위험한 패턴 정의
+# DANGEROUS_PATTERNS = [
+#     r"system\s*(prompt|instruction|role)",
+#     r"ignore\s*(previous|above|all|instruction)",
+#     r"forget\s*(everything|all|previous)",
+#     r"disregard\s*(previous|above|all)",
+#     r"you\s*are\s*now",
+#     r"act\s*as",
+#     r"pretend\s*to\s*be",
+#     r"new\s*instruction",
+#     r"output\s*only",
+#     r"return\s*only",
+#     r"delete\s*(all|everything)",
+#     r"drop\s*table",
+#     r"<script",
+#     r"javascript:",
+#     r"잊어버려",
+#     r"새로운\s*지시",
+#     r"삭제\s*해줘",
+#     r"테이블\s*삭제",
+#     r"자바스크립트"
+# ]
+# 로깅 시도 중 에러 발생할 수 있어 주석 처리 추후 삭제 기능 통합 시 검토 후 적용
 
 def validate_schedule_input(user_input: str) -> None:
     """일정 입력 검증 - 프롬프트 인젝션 방어"""
@@ -57,17 +58,18 @@ def validate_schedule_input(user_input: str) -> None:
             detail="입력이 너무 짧습니다"
         )
 
-    # 2. 위험한 패턴 검사
-    for pattern in DANGEROUS_PATTERNS:
-        if re.search(pattern, user_input, re.IGNORECASE):
-            try:
-                logger.warning(f"Dangerous pattern detected: {pattern}, input: {user_input[:50]}")
-            except Exception:
-                pass  # 로깅 실패해도 검증은 계속 진행
-            raise HTTPException(
-                status_code=400,
-                detail="유효하지 않은 입력입니다. 일정 정보만 입력해주세요."
-            )
+    # # 2. 위험한 패턴 검사
+    # for pattern in DANGEROUS_PATTERNS:
+    #     if re.search(pattern, user_input, re.IGNORECASE):
+    #         try:
+    #             logger.warning(f"Dangerous pattern detected: {pattern}, input: {user_input[:50]}")
+    #         except Exception:
+    #             pass  # 로깅 실패해도 검증은 계속 진행
+    #         raise HTTPException(
+    #             status_code=400,
+    #             detail="유효하지 않은 입력입니다. 일정 정보만 입력해주세요."
+    #         )
+    # 현재 로직은 LLM이 일정 정보만 파싱하도록 설계되어 있어 주석 처리 추후 삭제 기능 통합 시 검토 후 적용 
 
     # 3. 특수문자 비율 검사
     normal_chars = len(re.findall(r'[a-zA-Z0-9가-힣\s,./:-]', user_input))
