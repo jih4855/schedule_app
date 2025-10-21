@@ -1,31 +1,32 @@
 .schedule-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background-color: #f4f7f6;
   display: flex;
   flex-direction: column;
 }
 
 .schedule-header {
-  background: rgba(45, 45, 68, 0.95);
+  background: #ffffff;
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .schedule-header h1 {
-  color: #e4e4e4;
+  color: #222;
   margin: 0;
   font-size: 24px;
   font-weight: 600;
 }
 
 .logout-button {
-  background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+  background: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -37,28 +38,29 @@
 }
 
 .logout-button:hover {
+  background: #0056b3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
 }
 
 .loading {
   text-align: center;
   padding: 50px;
-  color: white;
+  color: #555;
   font-size: 18px;
 }
 
 .error-message {
-  background: #3d1a1a;
-  color: #f87171;
-  border: 1px solid #5a2d2d;
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
   padding: 15px;
   border-radius: 8px;
   margin: 20px 40px;
   text-align: center;
 }
 
-/* 메인 레이아웃: 좌측 달력 + 우측 상세/요약 */
+/* 메인 레이아웃 */
 .schedule-main {
   display: flex;
   flex: 1;
@@ -68,14 +70,15 @@
   overflow: hidden;
 }
 
-/* 좌측: 월간 달력 (40%) */
+/* 좌측: 월간 달력 */
 .calendar-section {
   flex: 0 0 40%;
-  background: rgba(45, 45, 68, 0.7);
-  border: 1px solid #4a4a6a;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 20px;
   overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .calendar-header {
@@ -86,16 +89,16 @@
 }
 
 .calendar-header h2 {
-  color: #e4e4e4;
+  color: #333;
   margin: 0;
   font-size: 20px;
   font-weight: 600;
 }
 
 .month-nav-btn {
-  background: rgba(108, 99, 255, 0.2);
-  color: #e4e4e4;
-  border: 1px solid #6c63ff;
+  background: #e7f3ff;
+  color: #007bff;
+  border: 1px solid #cce5ff;
   padding: 8px 15px;
   border-radius: 6px;
   cursor: pointer;
@@ -105,7 +108,8 @@
 }
 
 .month-nav-btn:hover {
-  background: rgba(108, 99, 255, 0.4);
+  background: #d0e7ff;
+  border-color: #007bff;
   transform: scale(1.05);
 }
 
@@ -121,19 +125,19 @@
 }
 
 .calendar-weekday {
-  color: #b0b0c0;
+  color: #666;
   text-align: center;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   padding: 10px 5px;
 }
 
 .calendar-weekday:first-child {
-  color: #ff6b6b;
+  color: #d9534f;
 }
 
 .calendar-weekday:last-child {
-  color: #4dabf7;
+  color: #0275d8;
 }
 
 .calendar-days {
@@ -149,10 +153,10 @@
   align-items: flex-start;
   justify-content: flex-start;
   padding: 8px;
-  background: rgba(20, 20, 36, 0.7);
-  border: 1px solid #4a4a6a;
+  background: #fdfdfd;
+  border: 1px solid #eee;
   border-radius: 8px;
-  color: #e4e4e4;
+  color: #444;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 14px;
@@ -161,8 +165,8 @@
 }
 
 .calendar-day:hover:not(.empty) {
-  background: rgba(108, 99, 255, 0.2);
-  border-color: #6c63ff;
+  background: #e7f3ff;
+  border-color: #007bff;
   transform: scale(1.05);
 }
 
@@ -173,31 +177,29 @@
 }
 
 .calendar-day.today {
-  background: rgba(108, 99, 255, 0.3);
-  border-color: #6c63ff;
+  background: #fffde7;
+  border-color: #fbc02d;
   font-weight: bold;
 }
 
 .calendar-day.selected {
-  background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
-  border-color: #6c63ff;
+  background: #007bff;
+  border-color: #007bff;
   color: white;
   font-weight: bold;
 }
 
-/* 달력 날짜 숫자 */
 .calendar-day-number {
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 4px;
   align-self: center;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: center;
 }
 
-/* 달력 날짜 칸의 일정 목록 */
 .calendar-day-schedules {
   display: flex;
   flex-direction: column;
@@ -206,14 +208,13 @@
   margin-top: 2px;
 }
 
-/* 달력 날짜 칸의 개별 일정 제목 */
 .calendar-schedule-item {
-  font-size: 12px;
+  font-size: 11px;
   padding: 2px 4px;
   font-weight: 500;
-  background: rgba(108, 99, 255, 0.5);
+  background: #e7f3ff;
   border-radius: 3px;
-  color: #ffffff;
+  color: #0056b3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -221,23 +222,27 @@
   line-height: 1.3;
 }
 
+.calendar-day.selected .calendar-schedule-item {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
 .calendar-schedule-item.completed {
-  background: rgba(128, 128, 128, 0.3);
-  color: #a0a0b0;
+  background: #f5f5f5;
+  color: #999;
   text-decoration: line-through;
 }
 
-/* "외 N개" 표시 */
 .calendar-schedule-more {
   font-size: 11px;
   padding: 1px 4px;
-  color: #c0c0d0;
+  color: #888;
   font-weight: 500;
   font-style: italic;
   text-align: center;
 }
 
-/* 우측: 상세 및 요약 섹션 (60%) */
+/* 우측: 상세 및 요약 섹션 */
 .details-section {
   flex: 1;
   display: flex;
@@ -246,22 +251,22 @@
   overflow: hidden;
 }
 
-/* 우측 상단: 선택된 날짜 상세 (50%) */
-.date-details {
+.date-details, .week-summary {
   flex: 1;
-  background: rgba(45, 45, 68, 0.7);
-  border: 1px solid #4a4a6a;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 20px;
   overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.date-details h3 {
-  color: #e4e4e4;
+.date-details h3, .week-summary h3 {
+  color: #222;
   margin: 0 0 15px 0;
   font-size: 18px;
   font-weight: 600;
-  border-bottom: 2px solid #6c63ff;
+  border-bottom: 2px solid #007bff;
   padding-bottom: 10px;
 }
 
@@ -274,13 +279,13 @@
 .empty-message {
   text-align: center;
   padding: 40px 20px;
-  color: #a0a0b0;
+  color: #888;
   font-size: 14px;
 }
 
 .schedule-card {
-  background: #2d2d44;
-  border: 1px solid #4a4a6a;
+  background: #fdfdfd;
+  border: 1px solid #e8e8e8;
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
@@ -288,13 +293,13 @@
 
 .schedule-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-color: #6c63ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #007bff;
 }
 
 .schedule-card.completed {
-  background: rgba(45, 45, 68, 0.4);
-  border-color: #3a6a3a;
+  background: #f5f5f5;
+  border-color: #dcdcdc;
   opacity: 0.8;
 }
 
@@ -310,12 +315,12 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #6c63ff;
+  accent-color: #007bff;
   flex-shrink: 0;
 }
 
 .schedule-title {
-  color: #e4e4e4;
+  color: #333;
   margin: 0;
   font-size: 18px;
   font-weight: 700;
@@ -324,7 +329,7 @@
 
 .schedule-card.completed .schedule-title {
   text-decoration: line-through;
-  color: #a0a0b0;
+  color: #999;
 }
 
 .schedule-actions {
@@ -350,7 +355,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #6c63ff;
+  color: #007bff;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -360,14 +365,14 @@
 }
 
 .schedule-time {
-  color: #b0b0c0;
+  color: #555;
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
 }
 
 .schedule-description {
-  color: #9090a0;
+  color: #777;
   font-size: 13px;
   line-height: 1.5;
   flex: 1;
@@ -375,11 +380,11 @@
 
 .schedule-card.completed .schedule-time,
 .schedule-card.completed .schedule-description {
-  color: #707080;
+  color: #aaa;
 }
 
 .complete-button {
-  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  background: #28a745;
   color: white;
   border: none;
   padding: 5px 14px;
@@ -391,18 +396,19 @@
 }
 
 .complete-button:hover {
+  background: #218838;
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
 
 .complete-button.completed {
-  background: linear-gradient(135deg, #808080 0%, #707070 100%);
+  background: #6c757d;
 }
 
 .delete-button {
   background: transparent;
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
+  color: #dc3545;
+  border: 1px solid #dc3545;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 11px;
@@ -412,31 +418,12 @@
 }
 
 .delete-button:hover {
-  background: #ff6b6b;
+  background: #dc3545;
   color: white;
   transform: scale(1.05);
 }
 
-/* 우측 하단: 이번 주 요약 (50%) */
-.week-summary {
-  flex: 1;
-  background: rgba(45, 45, 68, 0.7);
-  border: 1px solid #4a4a6a;
-  border-radius: 12px;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.week-summary h3 {
-  color: #e4e4e4;
-  margin: 0 0 15px 0;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 2px solid #6c63ff;
-  padding-bottom: 10px;
-}
-
-/* 7일 요약 - 간단한 텍스트 형식 */
+/* 주간 요약 */
 .week-summary-simple {
   display: flex;
   flex-direction: column;
@@ -445,8 +432,8 @@
 }
 
 .week-summary-simple p {
-  color: #b0b0c0;
-  font-size: 17px;
+  color: #555;
+  font-size: 16px;
   margin: 0;
   line-height: 1.8;
 }
@@ -459,27 +446,27 @@
 }
 
 .daily-simple-item {
-  color: #9090a0;
-  font-size: 16px;
+  color: #666;
+  font-size: 15px;
   padding: 8px 0;
   line-height: 1.6;
-  border-bottom: 1px solid rgba(74, 74, 106, 0.3);
+  border-bottom: 1px solid #eee;
 }
 
 .daily-simple-item.today-highlight {
-  color: #6c63ff;
+  color: #007bff;
   font-weight: 600;
 }
 
 .daily-header-text {
   font-weight: 600;
   margin-bottom: 4px;
-  color: #e0e0e0;
+  color: #333;
 }
 
 .daily-schedule-brief {
-  font-size: 15px;
-  color: #9090a0;
+  font-size: 14px;
+  color: #777;
   padding-left: 8px;
   line-height: 1.5;
 }
@@ -494,13 +481,14 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(45, 45, 68, 0.98);
+  background: rgba(255, 255, 255, 0.95);
   padding: 20px 40px;
   display: flex;
   gap: 10px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
   z-index: 99;
+  border-top: 1px solid #e0e0e0;
 }
 
 .input-with-tooltip {
@@ -510,9 +498,9 @@
 
 .schedule-input {
   width: 100%;
-  background: #1e1e2e;
-  border: 1px solid #4a4a6a;
-  color: #e4e4e4;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
   padding: 15px 20px;
   border-radius: 8px;
   font-size: 14px;
@@ -521,17 +509,18 @@
 
 .schedule-input:focus {
   outline: none;
-  border-color: #6c63ff;
-  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
 .schedule-input::placeholder {
-  color: #707080;
+  color: #999;
 }
 
 .schedule-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  background: #eee;
 }
 
 /* Tooltip 스타일 */
@@ -540,11 +529,11 @@
   bottom: calc(100% + 15px);
   left: 0;
   right: 0;
-  background: rgba(30, 30, 46, 0.98);
-  border: 1px solid #6c63ff;
+  background: #fff;
+  border: 1px solid #007bff;
   border-radius: 10px;
   padding: 0;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -567,7 +556,7 @@
   transform: translateX(-50%);
   border-width: 10px;
   border-style: solid;
-  border-color: #6c63ff transparent transparent transparent;
+  border-color: #007bff transparent transparent transparent;
 }
 
 .input-tooltip::before {
@@ -578,30 +567,30 @@
   transform: translateX(-50%);
   border-width: 9px;
   border-style: solid;
-  border-color: rgba(30, 30, 46, 0.98) transparent transparent transparent;
+  border-color: #fff transparent transparent transparent;
   z-index: 1;
 }
 
 .tooltip-header {
-  background: rgba(108, 99, 255, 0.2);
-  color: #e4e4e4;
+  background: #e7f3ff;
+  color: #0056b3;
   padding: 12px 16px;
   border-radius: 10px 10px 0 0;
   font-weight: 600;
   font-size: 14px;
-  border-bottom: 1px solid #6c63ff;
+  border-bottom: 1px solid #cce5ff;
 }
 
 .tooltip-content {
   padding: 16px;
-  color: #b0b0c0;
+  color: #555;
   font-size: 13px;
   line-height: 1.6;
 }
 
 .tooltip-content strong {
   display: block;
-  color: #e4e4e4;
+  color: #333;
   margin-top: 10px;
   margin-bottom: 6px;
   font-size: 13px;
@@ -618,21 +607,21 @@
 }
 
 .tooltip-content li {
-  color: #9090a0;
+  color: #666;
   padding: 3px 0;
   position: relative;
 }
 
 .tooltip-content li::before {
   content: '•';
-  color: #6c63ff;
+  color: #007bff;
   font-weight: bold;
   position: absolute;
   left: -15px;
 }
 
 .send-button {
-  background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+  background: #007bff;
   color: white;
   border: none;
   padding: 15px 30px;
@@ -645,8 +634,9 @@
 }
 
 .send-button:hover:not(:disabled) {
+  background: #0056b3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
 .send-button:disabled {

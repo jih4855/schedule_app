@@ -1,5 +1,4 @@
-from pydantic import BaseModel, ConfigDict
-from pydantic import EmailStr, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 import re
 
 # Fast_api/api/login.py에서 가져온 코드입니다.

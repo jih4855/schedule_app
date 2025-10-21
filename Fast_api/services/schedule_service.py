@@ -11,8 +11,6 @@ def create_schedule(db: Session, schedule: ScheduleCreate, user_id: int) -> Sche
         user_id=user_id
     )
     db.add(db_schedule)
-    db.commit()
-    db.refresh(db_schedule)
     return db_schedule
 
 def get_user_schedules(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> List[Schedule]:

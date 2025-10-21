@@ -70,7 +70,6 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
 
   return (
     <div className="login-container">
-      <div className="login-wrapper">
         <div className="login-form">
           <h2>로그인</h2>
           <p className="login-description">
@@ -178,54 +177,6 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
               회원가입
             </a>
           </p>
-        </div>
-        </div>
-
-        <div className="project-info-panel">
-          <div className="panel-header">
-            <h3>이 프로젝트는</h3>
-            <p className="project-subtitle">FastAPI + React로 구축된 AI 일정 관리 시스템입니다</p>
-          </div>
-
-          <div className="tech-features">
-            <div className="tech-item">
-              <span className="tech-icon">✓</span>
-              <span className="tech-text">자연어 입력 → AI가 자동 파싱</span>
-            </div>
-            <div className="tech-item">
-              <span className="tech-icon">✓</span>
-              <span className="tech-text">JWT 인증으로 안전하게 보호</span>
-            </div>
-            <div className="tech-item">
-              <span className="tech-icon">✓</span>
-              <span className="tech-text">직관적인 캘린더 인터페이스</span>
-            </div>
-            <div className="tech-item">
-              <span className="tech-icon">✓</span>
-              <span className="tech-text">실시간 일정 통계</span>
-            </div>
-          </div>
-
-          <div className="roadmap-section">
-            <h4 className="roadmap-title">개발 예정</h4>
-            <ul className="roadmap-list">
-              <li>향상된 토큰 관리 시스템</li>
-              <li>데이터베이스 마이그레이션 (SQLite → PostgreSQL)</li>
-              <li>사용자 프로필 기능</li>
-              <li>일정 공유 및 협업 기능</li>
-            </ul>
-          </div>
-
-          <div className="portfolio-badge">
-            <span className="badge-icon">📌</span>
-            <div className="badge-content">
-              <strong>포트폴리오 프로젝트</strong>
-              <p>상세 구현 및 코드는 아래 GitHub Repository에서 확인하세요</p>
-              <a href="https://github.com/jih4855/schedule_app.git" target="_blank" rel="noopener noreferrer" className="github-repo-link">
-                GitHub Repository →
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </div>

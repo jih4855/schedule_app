@@ -49,11 +49,39 @@ async def parse_and_create_schedules(
         # 기타 모든 오류는 일반 메시지로 처리, 서버 로그에만 상세 기록
         logger.error(f"LLM 파싱 실패: user={current_user.username}, error={str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="일정 파싱 중 오류가 발생했습니다. 다시 시도해주세요.")
+    
+    # 무료 사용자만 제한 체크
+    if not current_user.paid_user:
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        KST = ZoneInfo('Asia/Seoul')
+        today = datetime.now(KST).date()
+
+        # 날짜 리셋
+        if current_user.last_reset_date != today:
+            current_user.request_count = 0
+            current_user.last_reset_date = today
+
+        # 제한 체크
+        if current_user.request_count >= current_user.daily_limit:
+            raise HTTPException(
+                status_code=429,
+                detail=f"무료 사용자 일일 요청 한도를 초과했습니다. (오늘: {current_user.request_count}/{current_user.daily_limit})"
+            )
+        # 카운트 증가
+        current_user.request_count += 1
 
     created_schedules = []
     for schedule in parsed_schedules:
         db_schedule = schedule_service.create_schedule(db, schedule, current_user.id)
         created_schedules.append(db_schedule)
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.error(f"일정 생성 커밋 실패: user={current_user.username}, error={str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="일정 생성 중 오류가 발생했습니다. 다시 시도해주세요.")
+
 
     return created_schedules
 

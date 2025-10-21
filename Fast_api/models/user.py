@@ -1,8 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime
 from Fast_api.db.base_class import Base
-from sqlalchemy import DateTime
-from datetime import datetime
-from sqlalchemy import DateTime
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from passlib.context import CryptContext
@@ -19,7 +16,10 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     time_stamp = Column(DateTime, default=lambda: datetime.now(KST))  # 한국 시간으로 기본값 설정
-
+    daily_limit = Column(Integer, default=10)  # 일일 요청 제한 기본값 설정
+    request_count = Column(Integer, default=0)  # 현재 요청 수
+    last_reset_date = Column(Date, default=lambda: datetime.now(KST))  # 마지막 초기화 날짜
+    paid_user = Column(Boolean, default=False)  # 유료 사용자 여부 기본값 설정
 
 
     def verify_password(self, password: str) -> bool:

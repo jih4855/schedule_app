@@ -102,7 +102,7 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 # CORS 설정 - 빈 문자열 필터링
 production_url = os.getenv("PRODUCTION_URL")
-allowed_origins = ["http://localhost:8000", "http://localhost:3000"]
+allowed_origins = ["http://localhost:8000", "http://localhost:3000","http://192.168.219.101:3000"]
 if production_url:
     allowed_origins.append(production_url)
 
